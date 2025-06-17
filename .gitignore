@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+venv/
+.env
+
+.ipynb_checkpoints
+
+.DS_Store
+
+openai_api_key.txt
+groq_api_key.txt
+
+test.py
