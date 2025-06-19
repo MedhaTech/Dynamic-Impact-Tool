@@ -13,31 +13,54 @@
 #     )
 #     return generate_response(prompt)
 
+import json
+from utils.ollama_handler import call_ollama_model
+from utils.groq_handler import call_groq_model
+from utils.logger import logger
+from utils.groq_handler import call_groq_model
 
-from langchain.schema import HumanMessage, SystemMessage
-from langchain.chat_models import ChatOllama
 
-llm = ChatOllama(model="gemma:2b")  
 
-def handler_chat(user_question, df, insights=None):
-    from pandas import DataFrame
+def handle_user_query_dynamic(user_query, df, model_source="groq"):
+    schema = ", ".join(df.columns.tolist())
+    preview = df.head(3).to_dict(orient='records')
 
-    df_sample = df.head(20).to_csv(index=False)
+    system_prompt = """
+You are a Senior Data Analyst Agent. You never return Python code.
+If the user's question is about a chart, return only:
+{
+  "chart_type": "bar", 
+  "group_by": ["heart_disease", "stroke"]
+}
 
-    prompt = f"""
-You are a data analyst. You are provided with a dataset sample:
-{df_sample}
-
-And the following insights if available:
-{insights or "None"}
-
-Answer this question based on the dataset: {user_question}
+If the user's question is about a data insight, return the answer in plain text. Do NOT generate any charts unless explicitly asked.
 """
 
+    query_prompt = f"""Dataset Columns: {schema}
+Sample Data: {preview}
+User Query: {user_query}"""
+
     try:
-        response = llm.invoke([HumanMessage(content=prompt)])
-        return response.content
+        logger.info(f"[User Query] {user_query}")
+        logger.info(f"[Columns] {schema}")
+        logger.info(f"[Model Source] {model_source}")
+
+        if model_source == "groq":
+            output = call_groq_model(system_prompt, query_prompt)
+        else:
+            output = call_ollama_model(system_prompt, query_prompt)
+
+        logger.info(f"[LLM Raw Output] {output}")
+
+        # Try parsing chart-type response
+        try:
+            parsed = json.loads(output)
+            logger.info(f"[Parsed LLM Response] {parsed}")
+            return parsed
+        except Exception as parse_error:
+            logger.warning(f"[Fallback to Text Response] Could not parse JSON: {parse_error}")
+            return output.strip()
+
     except Exception as e:
-        return f"Error: {e}"
-
-
+        logger.error(f"[LLM Error] {e}")
+        return f"LLM Error: {e}"

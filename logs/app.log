@@ -1,0 +1,31 @@
+[2025-06-19 22:39:04,398] INFO - [User Query] Visualize the data hypertension and heart disease using bar
+[2025-06-19 22:39:04,398] INFO - [Columns] id, gender, age, hypertension, heart_disease, ever_married, work_type, Residence_type, avg_glucose_level, bmi, smoking_status, stroke
+[2025-06-19 22:39:04,399] INFO - [Model Source] groq
+[2025-06-19 22:39:04,788] INFO - [LLM Raw Output] {
+  "chart_type": "bar", 
+  "group_by": ["hypertension", "heart_disease"]
+}
+[2025-06-19 22:39:04,788] INFO - [Parsed LLM Response] {'chart_type': 'bar', 'group_by': ['hypertension', 'heart_disease']}
+[2025-06-19 22:40:10,530] INFO - [User Query] Compare gender and age using bar 
+[2025-06-19 22:40:10,530] INFO - [Columns] id, gender, age, hypertension, heart_disease, ever_married, work_type, Residence_type, avg_glucose_level, bmi, smoking_status, stroke
+[2025-06-19 22:40:10,531] INFO - [Model Source] groq
+[2025-06-19 22:40:10,771] INFO - [LLM Raw Output] {
+  "chart_type": "bar", 
+  "group_by": ["gender", "age"]
+}
+[2025-06-19 22:40:10,772] INFO - [Parsed LLM Response] {'chart_type': 'bar', 'group_by': ['gender', 'age']}
+[2025-06-19 22:41:06,279] INFO - [User Query] explain the data for a child 
+[2025-06-19 22:41:06,279] INFO - [Columns] id, gender, age, hypertension, heart_disease, ever_married, work_type, Residence_type, avg_glucose_level, bmi, smoking_status, stroke
+[2025-06-19 22:41:06,279] INFO - [Model Source] groq
+[2025-06-19 22:41:07,080] INFO - [LLM Raw Output] The data provided is related to patients who have had a stroke or are at risk of having one. The data includes information about the patients' demographics, health conditions, and lifestyle factors. 
+
+The data is divided into several categories, including:
+
+* Demographics: gender, age, and residence type
+* Health conditions: hypertension, heart disease, and stroke
+* Lifestyle factors: ever married, work type, average glucose level, body mass index (bmi), and smoking status
+
+The data is useful for understanding the relationships between these factors and the risk of having a stroke. For example, it might be interesting to see how smoking status affects the risk of having a stroke, or how body mass index is related to the risk of having a stroke.
+
+If you would like to explore this data further, I can help you with that.
+[2025-06-19 22:41:07,080] WARNING - [Fallback to Text Response] Could not parse JSON: Expecting value: line 1 column 1 (char 0)

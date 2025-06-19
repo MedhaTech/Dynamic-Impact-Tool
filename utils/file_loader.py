@@ -46,5 +46,4 @@ def load_data(uploaded_file):
         return pd.read_xml(uploaded_file)
     else:
         raise ValueError("Unsupported file format.")
-
-            
+   
