@@ -1,20 +1,13 @@
 import ollama
 import os
 import requests
+from langchain_community.llms import Ollama
 
-# === OLLAMA HANDLER ===
-def call_ollama_model(system_prompt, user_prompt):
-    response = ollama.chat(
-        model="gemma:2b",  # Or gemma:7b or deepseek:8b etc.
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ]
-    )
-    return response['message']['content'].strip()
+def call_ollama_model(system_prompt, query_prompt):
+    prompt = f"{system_prompt}\n\n{query_prompt}"
+    model = Ollama(model="gemma:2b")
+    return model.invoke(prompt)
 
-
-# === GROQ HANDLER ===
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 

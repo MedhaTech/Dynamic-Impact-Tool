@@ -15,3 +15,6 @@ openai_api_key.txt
 groq_api_key.txt
 
 test.py
+
+chat_logs/
+config.py

@@ -14,11 +14,10 @@
 #     return generate_response(prompt)
 
 import json
-from utils.ollama_handler import call_ollama_model
-from utils.groq_handler import call_groq_model
-from utils.logger import logger
-from utils.groq_handler import call_groq_model
-
+from datetime import datetime
+from .ollama_handler import call_ollama_model
+from .groq_handler import call_groq_model
+from .logger import logger
 
 
 def handle_user_query_dynamic(user_query, df, model_source="groq"):
@@ -29,11 +28,17 @@ def handle_user_query_dynamic(user_query, df, model_source="groq"):
 You are a Senior Data Analyst Agent. You never return Python code.
 If the user's question is about a chart, return only:
 {
-  "chart_type": "bar", 
-  "group_by": ["heart_disease", "stroke"]
+  "response": {
+    "chart_type": "bar", 
+    "group_by": ["column1", "column2"]
+  },
+  "follow_ups": ["suggested question 1", "suggested question 2"]
 }
-
-If the user's question is about a data insight, return the answer in plain text. Do NOT generate any charts unless explicitly asked.
+If it's a data insight, return only:
+{
+  "response": "Plain text answer",
+  "follow_ups": ["suggested question 1", "suggested question 2"]
+}
 """
 
     query_prompt = f"""Dataset Columns: {schema}
@@ -52,15 +57,19 @@ User Query: {user_query}"""
 
         logger.info(f"[LLM Raw Output] {output}")
 
-        # Try parsing chart-type response
         try:
             parsed = json.loads(output)
-            logger.info(f"[Parsed LLM Response] {parsed}")
             return parsed
         except Exception as parse_error:
-            logger.warning(f"[Fallback to Text Response] Could not parse JSON: {parse_error}")
-            return output.strip()
+            logger.warning(f"[JSON Parse Fallback] {parse_error}")
+            return {
+                "response": output.strip(),
+                "follow_ups": []
+            }
 
     except Exception as e:
         logger.error(f"[LLM Error] {e}")
-        return f"LLM Error: {e}"
+        return {
+            "response": f"LLM Error: {e}",
+            "follow_ups": []
+        }

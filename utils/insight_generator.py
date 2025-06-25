@@ -7,19 +7,26 @@
 #     response = generate_response(prompt)
 #     return response
 
-# utils/insight_generator.py
 
-from utils.groq_handler import call_groq_model
-from utils.ollama_handler import call_ollama_model
 
-def generate_insights(df, category, model_source="groq"):
-    columns = ", ".join(df.columns.tolist())
-    sample_data = df.head(3).to_dict(orient="records")
+from .llm_selector import get_llm
+import pandas as pd
+from io import StringIO
 
-    system_prompt = "You are a senior data scientist. Never return code."
-    user_prompt = f"Generate {category} from the following dataset:\n\nColumns: {columns}\n\nSample: {sample_data}"
+def generate_insights(df: pd.DataFrame, insight_title: str, model_source="groq") -> str:
+    preview = df.head(100).to_csv(index=False)
 
-    if model_source == "groq":
-        return call_groq_model(system_prompt, user_prompt)
-    else:
-        return call_ollama_model(system_prompt, user_prompt)
+    prompt = f"""
+You are a senior data scientist. Based on the following dataset preview and the selected insight:
+
+Dataset:
+{preview[:3000]}
+
+Selected Insight: {insight_title}
+
+Generate a detailed data insight. Do not include Python code. Keep it simple and data-driven.
+"""
+
+    llm = get_llm(model_source)
+    return llm(prompt)
+

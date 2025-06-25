@@ -1,64 +1,45 @@
 # LLM-Powered Autonomous Data Insight Generator
 
-An interactive Streamlit-based web application that acts like a **Senior Data Scientist Agent** to generate advanced data insights, visualizations, and answer questions — powered by **Gemma (via Ollama locally)** and **Groq (cloud)**.
+### An intelligent, agent-based Streamlit application that analyzes structured datasets (CSV, Excel, JSON), generates insights, and enables natural language conversations with your data — just like a senior data scientist.
 
 ---
 
 ## Features
 
-- Upload structured data (`.csv`, `.xlsx`, `.json`, `.xml`)
-- Auto-generates insights across 7 categories:
-  - Performance & Accuracy Insights
-  - Question-Specific Insights
-  - Attempt & Behavioral Insights
-  - Comparative & Demographic Insights
-  - Question Design & Learning Insights
-  - Advanced Statistical Insights
-  - Actionable Recommendations
-- Advanced auto visualizations using Plotly
-- Intelligent Q&A on your dataset
-- Dual-model integration:
-  - `Gemma` (offline via Ollama)
-  - `Groq` (cloud-based, faster inference)
+### AI-Powered Insight Generation
+
+- Automatically identifies important columns in your dataset
+- Suggests the most relevant insights
+- Categorizes insights (performance, behavioral, demographic, statistical, etc.)
+- Generates advanced statistical observations from user-selected columns
+
+### Continuous Chat Interface
+
+- WhatsApp-style chat with scrolling memory
+- Ask any natural language question about your dataset
+- Generates charts, plots, and text insights
+- Keeps chat history per session
+- Follow-up question suggestions
+- Chat logs saved in `chat_logs/` folder
+- One-click download of the entire conversation
+
+### Chart Support
+
+- Auto-generates `Plotly` visualizations from LLM outputs
+- Supports bar, line, pie, and more
+- Intelligent chart recommendations based on user queries
 
 ---
 
+## Tech Stack
 
+| Component       | Technology                           |
+| --------------- | ------------------------------------ |
+| Frontend        | `Streamlit`                        |
+| LLM Integration | `Ollama` (local), `Groq` (cloud) |
+| Agent Framework | `LangChain`                        |
+| Visualization   | `Plotly , Matplotlib`              |
+| Environment     | `Python 3.9+`                      |
+| File Formats    | `.csv`, `.xlsx`, `.json`       |
 
-## Folder Structure
-
-GenAI/
-
-│
-
-├── app.py                          # Streamlit app
-
-├── prompts/
-
-│   └── system_prompts.txt          # LLM system instructions
-
-├── models/
-
-│   └── local_model.py              # Model interface
-
-├── utils/
-
-│   ├──  **init** .py
-
-│   ├── chat_handler.py             # Handles chat with LLM
-
-│   ├── data_cleaner.py             # Cleaning utilities
-
-│   ├── file_loader.py              # File parsing
-
-│   ├── groq_handler.py             # Groq-based inference
-
-│   ├── insight_generator.py        # Prompt and generate insights
-
-│   ├── ollama_handler.py           # Gemma (local model) handler
-
-│   ├── prompt_engine.py            # Prompt formatter
-
-│   ├── rag_engine.py               # 🔄 Future integration (RAG)
-
-│   └── visualizer.py               # Plotting functions
+---
