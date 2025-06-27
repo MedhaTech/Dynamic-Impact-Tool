@@ -1,33 +1,33 @@
+from config.settings import GROQ_API_KEY
+from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
-from chains.category_chain import GroqChatLLM
-def generate_insights_for_category(columns, rows, category):
+from chains.llms import GroqChatLLM
+
+def generate_autonomous_insights(columns, rows):
     prompt = ChatPromptTemplate.from_template(
-        """You are a highly skilled data scientist.
+        """
+You are an autonomous data scientist.
 
-Based on this dataset:
-Columns: {columns}
-Sample Rows: {rows}
+You are analyzing a dataset with:
+- Columns: {columns}
+- Sample Data: {rows}
 
-Now, under the category **"{category}"**, generate 5–10 detailed insights or observations using the data. 
-Return:
-- Realistic insights
-- Use numbers/percentages if visible
-- Mention visual patterns if relevant
-- Avoid code. Just insight explanations (markdown ok)
+Task:
+1. Think of the most important 5–7 aspects to analyze.
+2. Derive 8–10 insights based on patterns in the data.
+3. Include numeric patterns, time trends, outliers, correlations, or clusters.
+4. Do not include code. Use bullet points and markdown formatting.
+
+Output only insights. Do not explain the prompt.
 """
     )
 
     formatted = prompt.format_messages(
         columns=", ".join(columns),
-        rows=rows[:5],
-        category=category
+        rows=rows[:5]
     )
 
     llm = GroqChatLLM()
     response = llm(formatted)
 
     return response.content.strip()
-
-
-
-

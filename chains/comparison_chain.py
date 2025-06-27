@@ -1,6 +1,6 @@
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
 from config.settings import GROQ_API_KEY
+from langchain_community.chat_models import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate
 
 class GroqChatLLM(ChatOpenAI):
     def __init__(self, model="llama3-8b-8192", temperature=0.3, **kwargs):
@@ -47,35 +47,3 @@ Return in structured markdown format.
     response = llm(messages)
 
     return response.content.strip()
-
-# import streamlit as st
-# from langchain.prompts import ChatPromptTemplate
-# from chains.llms import GroqChatLLM
-
-# def generate_llm_diff_summary(df1, df2, column):
-#     prompt = ChatPromptTemplate.from_template(
-#         """
-# You are a data analyst.
-
-# Compare this column: "{column}"
-
-# Dataset A values (sample): {values1}
-# Dataset B values (sample): {values2}
-
-# Summarize key differences in distribution, range, or patterns in 3–5 bullet points.
-# Use numbers if possible. Be concise.
-# """
-#     )
-
-#     try:
-#         values1 = df1[column].dropna().astype(str).sample(min(100, len(df1))).tolist()
-#         values2 = df2[column].dropna().astype(str).sample(min(100, len(df2))).tolist()
-
-#         llm = GroqChatLLM()
-#         messages = prompt.format_messages(column=column, values1=values1, values2=values2)
-#         response = llm(messages)
-
-#         return response.content.strip()
-#     except Exception as e:
-#         print("❌ Comparison summary failed:", e)
-#         return "Could not generate comparison summary."

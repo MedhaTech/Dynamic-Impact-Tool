@@ -1,5 +1,3 @@
-import ast
-import streamlit as st
 from config.settings import GROQ_API_KEY
 from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
@@ -15,69 +13,55 @@ class GroqChatLLM(ChatOpenAI):
         )
 
 def generate_visual_suggestions(df):
+    column_types = {col: str(dtype) for col, dtype in df.dtypes.items()}
+    columns = list(df.columns)
+    sample_rows = df.head(5).to_dict(orient="records")
+
     prompt = ChatPromptTemplate.from_template(
         """
-You are a data analyst.
+You are a data visualization expert.
 
-You will be given:
-- A list of column names: {columns}
-- The column data types: {types}
-- A few sample rows: {rows}
+You are given:
+- Column names: {columns}
+- Column data types: {types}
+- Sample rows: {rows}
 
-Your task:
-Suggest 3 to 5 visualizations the user can create.
+Your job is to:
+1. Propose 3 to 5 **clear and useful visualizations** based on this data.
+2. Each must include:
+   - An insight (e.g., trend, comparison, distribution)
+   - A chart type (bar, line, scatter, pie, histogram)
+   - What to plot on x-axis and y-axis (or only x for hist/pie)
+3. Prefer time, categorical, and numeric fields where appropriate.
+4. Avoid repetition and make sure chart types fit the column types.
 
-Return a valid Python list of dicts. Each dict must contain:
-{
-  "insight": "...",
-  "chart": {"type": "bar/line/scatter/histogram/pie", "x": "col1", "y": "col2 (optional)"}
-}
-
-✅ Wrap everything in [ ... ]
-❌ Do not return anything before/after the list
-❌ No markdown, numbering, or explanations
-
-Example:
+ Return a valid Python list like:
 [
   {
-    "insight": "Sales increase over months.",
+    "insight": "Sales increased month-over-month.",
     "chart": { "type": "line", "x": "month", "y": "sales" }
-  }
+  },
+  ...
 ]
+
+ DO NOT return markdown or explanations. Just return the list only.
 """
     )
 
+    formatted = prompt.format_messages(
+        columns=", ".join(columns),
+        types=str(column_types),
+        rows=sample_rows
+    )
 
-    sample_rows = df.head(3).to_dict(orient="records")
-    types = df.dtypes.apply(lambda x: str(x)).to_dict()
     llm = GroqChatLLM()
+    response = llm(formatted)
 
     try:
-        messages = prompt.format_messages(
-            columns=", ".join(df.columns),
-            types=types,
-            rows=sample_rows
-        )
+        suggestions = eval(response.content.strip())
+        if isinstance(suggestions, list):
+            return suggestions
+    except Exception:
+        pass
 
-        response = llm(messages)
-
-        if not hasattr(response, "content"):
-            raise ValueError("No content in LLM response.")
-
-        raw = response.content.strip()
-        st.session_state["last_llm_visual_raw"] = raw
-        print("🧠 Raw LLM Visual Suggestion Output:\n", raw)
-
-        # Try to parse the LLM response safely
-        parsed = ast.literal_eval(raw)
-        if isinstance(parsed, list):
-            return parsed
-
-    except Exception as e:
-        print("❌ Failed to parse LLM visual suggestions.")
-        print("Error:", e)
-        print("LLM raw output:\n", raw if 'raw' in locals() else "No response.")
-
-        st.session_state["last_llm_visual_raw"] = raw if 'raw' in locals() else "❌ No valid content"
-
-    return [{"insight": "No valid visual suggestions were returned.", "chart": None}]
+    return []

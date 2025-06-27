@@ -1,49 +1,60 @@
 from config.settings import GROQ_API_KEY
 from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
-
-class GroqChatLLM(ChatOpenAI):
-    def __init__(self, model="llama3-8b-8192", temperature=0.3, **kwargs):
-        super().__init__(
-            openai_api_base="https://api.groq.com/openai/v1",
-            openai_api_key=GROQ_API_KEY,
-            model=model,
-            temperature=temperature,
-            **kwargs
-        )
+from chains.llms import GroqChatLLM
 
 def generate_insight_categories(columns, rows):
     prompt = ChatPromptTemplate.from_template(
-        """You are a senior AI data scientist.
+        """
+You are an expert AI data analyst.
 
-Based on the following columns:
+Your job is to read the **columns** and **sample rows** from a dataset and propose the most useful insight categories a user should explore.
+
+Dataset Columns:
 {columns}
 
-And sample rows:
+Sample Rows:
 {rows}
 
-Suggest 5–7 useful **insight categories** people might want to analyze. Return only a **Python list of strings** like:
+Based on this data, suggest 5–7 meaningful insight categories (beyond basic stats). 
+Return only a **valid Python list of strings**.
 
-["Performance Trends", "Demographic Variance", "Learning Patterns"]
+ Examples of good categories:
+- Time-based Performance Trends
+- User Segmentation by Region
+- Engagement Drop-off Points
+- Feature Usage Patterns
+- Behavior by Demographics
+
+ Do NOT include markdown, explanations, or labels.
+Just return:
+["Category 1", "Category 2", ..., "Category N"]
 """
     )
 
-    formatted = prompt.format_messages(
-        columns=", ".join(columns),
-        rows=rows[:5]
-    )
-
-    llm = GroqChatLLM()
-    response = llm(formatted)
-
-    text = response.content.strip()
-
     try:
+        formatted = prompt.format_messages(
+            columns=", ".join(columns),
+            rows=rows[:5]
+        )
+
+        llm = GroqChatLLM()
+        response = llm(formatted)
+
+        text = response.content.strip()
         categories = eval(text)
-        if isinstance(categories, list):
+
+        if isinstance(categories, list) and all(isinstance(cat, str) for cat in categories):
             return categories
-        else:
-            return ["Performance & Accuracy Insights", "Learning Patterns", "Demographic Trends", "Engagement Analysis", "Comparative Performance", "Visualization Insights"]
+
     except Exception:
-        return ["Performance & Accuracy Insights", "Learning Patterns", "Demographic Trends", "Engagement Analysis", "Comparative Performance", "Visualization Insights"]
-        
+        pass
+
+    return [
+        "Performance & Accuracy Insights",
+        "Learning Patterns",
+        "Demographic Trends",
+        "Engagement Analysis",
+        "Comparative Performance",
+        "Visualization Insights"
+    ]

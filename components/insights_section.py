@@ -1,76 +1,65 @@
 import streamlit as st
-from chains.category_chain import generate_insight_categories
-from chains.insight_chain import generate_insights_for_category
+from chains.insight_chain import generate_autonomous_insights
+from dotenv import load_dotenv
+
+
 
 def render_insights_tab():
-    st.subheader("AI-Generated Insight Explorer")
+    st.title("🔍 Autonomous Insight Generator")
 
-    # Dataset A
-    if st.session_state.df1 is not None:
-        st.markdown("### Insights for Dataset A")
+    if (
+        st.session_state.get("df") is None
+        and st.session_state.get("df1") is None
+        and st.session_state.get("df2") is None
+    ):
+        st.warning("⚠️ Please upload at least one dataset to begin.")
+        return
 
-        if st.button("Generate Insight Categories (A)"):
-            if "last_llm_insight_category_raw" in st.session_state:
-                with st.expander("🧠 Raw LLM Category Output"):
-                    st.code(st.session_state["last_llm_insight_category_raw"], language="python")
+    # Build available dataset options
+    available_datasets = []
+    if st.session_state.get("df") is not None:
+        available_datasets.append("Single Dataset")
+    if st.session_state.get("df1") is not None:
+        available_datasets.append("Dataset A")
+    if st.session_state.get("df2") is not None:
+        available_datasets.append("Dataset B")
 
-            try:
-                cols = st.session_state.selected_cols_1 or st.session_state.df1.columns.tolist()
-                rows = st.session_state.df1[cols].sample(min(5, len(st.session_state.df1))).to_dict(orient="records")
-                categories = generate_insight_categories(cols, rows)
-                st.session_state.insight_categories_1 = categories
-            except Exception as e:
-                st.error(f"Category generation failed: {e}")
+    selected_dataset = st.radio("Select Dataset for Insights", available_datasets, horizontal=True)
 
-        if st.session_state.insight_categories_1:
-            selected = st.selectbox("Select Insight Category", st.session_state.insight_categories_1, key="insight_cat_1")
-            st.session_state.selected_category_1 = selected
+    # Pick correct DataFrame
+    if selected_dataset == "Single Dataset":
+        selected_df = st.session_state.df
+    elif selected_dataset == "Dataset A":
+        selected_df = st.session_state.df1
+    else:
+        selected_df = st.session_state.df2
 
-        if st.session_state.selected_category_1:
-            if st.button("Generate Insights for Selected Category (A)"):
-                try:
-                    cols = st.session_state.selected_cols_1 or st.session_state.df1.columns.tolist()
-                    rows = st.session_state.df1[cols].sample(min(5, len(st.session_state.df1))).to_dict(orient="records")
-                    insights = generate_insights_for_category(cols, rows, st.session_state.selected_category_1)
+    if selected_df is not None:
+        with st.expander(f"📄 {selected_dataset} Preview"):
+            st.dataframe(selected_df.head(), use_container_width=True)
 
-                    st.session_state.category_insights_1[st.session_state.selected_category_1] = insights
-                except Exception as e:
-                    st.error(f"Insight generation failed: {e}")
-            if not isinstance(st.session_state.get("category_insights_1"), dict):
-                st.session_state.category_insights_1 = {}
-            insights = st.session_state.category_insights_1.get(st.session_state.selected_category_1)
-            if insights:
-                st.markdown(insights)
+        if st.button(f"🚀 Generate Insights for {selected_dataset}"):
+            cols = selected_df.columns.tolist()
+            sample_rows = selected_df[cols].sample(min(5, len(selected_df))).to_dict(orient="records")
 
-    # Dataset B
-    if st.session_state.df2 is not None:
-        st.markdown("### Insights for Dataset B")
+            # Store insight output in the right session key
+            if selected_dataset == "Dataset A":
+                st.session_state["insight_output_1"] = generate_autonomous_insights(cols, sample_rows)
+            elif selected_dataset == "Dataset B":
+                st.session_state["insight_output_2"] = generate_autonomous_insights(cols, sample_rows)
+            else:
+                st.session_state["insight_output"] = generate_autonomous_insights(cols, sample_rows)
 
-        if st.button("Generate Insight Categories (B)"):
-            try:
-                cols = st.session_state.selected_cols_2 or st.session_state.df2.columns.tolist()
-                rows = st.session_state.df2[cols].sample(min(5, len(st.session_state.df2))).to_dict(orient="records")
-                categories = generate_insight_categories(cols, rows)
-                st.session_state.insight_categories_2 = categories
-            except Exception as e:
-                st.error(f"Category generation failed: {e}")
+        # Pick correct insight output key
+        if selected_dataset == "Dataset A":
+            output_key = "insight_output_1"
+        elif selected_dataset == "Dataset B":
+            output_key = "insight_output_2"
+        else:
+            output_key = "insight_output"
 
-        if st.session_state.insight_categories_2:
-            selected = st.selectbox("Select Insight Category", st.session_state.insight_categories_2, key="insight_cat_2")
-            st.session_state.selected_category_2 = selected
-
-        if st.session_state.selected_category_2:
-            if st.button("Generate Insights for Selected Category (B)"):
-                try:
-                    cols = st.session_state.selected_cols_2 or st.session_state.df2.columns.tolist()
-                    rows = st.session_state.df2[cols].sample(min(5, len(st.session_state.df2))).to_dict(orient="records")
-                    insights = generate_insights_for_category(cols, rows, st.session_state.selected_category_2)
-                    st.session_state.category_insights_2[st.session_state.selected_category_2] = insights
-                except Exception as e:
-                    st.error(f"Insight generation failed: {e}")
-            if not isinstance(st.session_state.get("category_insights_2"), dict):
-                st.session_state.category_insights_2 = {}
-            insights = st.session_state.category_insights_2.get(st.session_state.selected_category_2)
-            if insights:
-                st.markdown(insights)
-
+        if st.session_state.get(output_key):
+            st.markdown(f"#### 🧠 Insights for {selected_dataset}")
+            st.markdown(st.session_state[output_key])
+    else:
+        st.warning(f"⚠️ {selected_dataset} is not uploaded yet.")

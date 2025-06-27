@@ -1,28 +1,48 @@
 import streamlit as st
-from state.session_manager import init_session_state
+from dotenv import load_dotenv
+
 from components.sidebar import render_sidebar
-from components.dataset_viewer import render_data_preview
 from components.summary_section import render_summary_tab
 from components.insights_section import render_insights_tab
 from components.comparison_section import render_comparison_tab
-from components.visualizations_section import render_visualizations_tab 
+from components.export_section import render_export_tab
 
-st.set_page_config(page_title="LLM Dataset Analyzer", layout="wide")
+from utils.state_manager import init_session_state
+
+load_dotenv()
+
+st.set_page_config(page_title="Dynamic Impact Tool", layout="wide", page_icon="📊")
+
 init_session_state()
 
-render_sidebar()
+session_defaults = {
+    "df": None,                
+    "df1": None,              
+    "df2": None,             
+    "summary_output_1": "",
+    "summary_output_2": "",
+    "insight_output_1": "",
+    "insight_output_2": "",
+    "comparison_result": "",
+    "compare_chat": [],
+    "chat_history": [],
+    "visual_suggestions": [],  
+}
+for key, value in session_defaults.items():
+    if key not in st.session_state:
+        st.session_state[key] = value
 
-# Main View
-st.title("📊 Dynamic Dataset Analyzer")
-selected_tab = st.session_state.get("selected_tab", "Summary")
+section = render_sidebar()
 
-if selected_tab == "Summary":
+if section == "Single Dataset":
     render_summary_tab()
-elif selected_tab == "Insights":
     render_insights_tab()
-elif selected_tab == "Comparison":
+
+elif section == "Dataset Comparison":
     render_comparison_tab()
-elif selected_tab == "Visualizations":
-    render_visualizations_tab()
-    
-render_data_preview()
+
+elif section == "Summary & Export":
+    render_export_tab()
+
+else:
+    st.info("Please select a valid section from the sidebar.")
