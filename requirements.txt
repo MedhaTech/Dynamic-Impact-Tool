@@ -1,0 +1,17 @@
+# Core
+streamlit>=1.33.0
+pandas>=2.2.0
+duckdb>=0.10.0
+
+# LLM & LangChain
+langchain>=0.1.14
+openai>=1.25.0  # Needed even for Groq-compatible use
+tiktoken>=0.5.1
+
+# Visualizations (optional if you later add charts)
+plotly>=5.18.0
+seaborn>=0.13.2
+matplotlib>=3.8.4
+
+# Utility
+python-dotenv>=1.0.1
