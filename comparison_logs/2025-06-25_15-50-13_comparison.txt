@@ -1,0 +1,27 @@
+**Schema Comparison**
+
+Both datasets have the same schema, with the same columns in the same order. The columns are:
+
+* `track_id`: object
+* `track_name`: object
+* `artist`: object
+* `streams`: int64
+* `in_spotify_playlists`: int64
+* `in_apple_playlists`: int64
+* `release_date`: object
+* `genre`: object
+
+**Sample Data Patterns**
+
+Both datasets have similar patterns in their sample data. Both datasets contain tracks with distinct `track_id`, `track_name`, `artist`, and `release_date` values. The `streams`, `in_spotify_playlists`, and `in_apple_playlists` columns contain numeric values. The `genre` column contains categorical values.
+
+**Insights and Red Flags**
+
+Some insights and red flags that can be observed from the sample data are:
+
+* The `streams` column in both datasets has a wide range of values, indicating that the tracks have varying levels of popularity.
+* The `in_spotify_playlists` and `in_apple_playlists` columns in both datasets have similar patterns, with some tracks having higher values than others. This could indicate that some tracks are more popular on certain music platforms.
+* The `genre` column in both datasets has a mix of genres, with some tracks categorized as `Indie` and others as `Hip-hop` or `Rock`. This could indicate a diverse range of music styles in both datasets.
+* There are no obvious errors or inconsistencies in the data, such as null values or incorrect data types.
+
+In summary, both datasets have similar schema and patterns in their sample data. The data appears to be clean and consistent, with no obvious errors or inconsistencies. Further analysis would be needed to identify any potential insights or red flags in the data.

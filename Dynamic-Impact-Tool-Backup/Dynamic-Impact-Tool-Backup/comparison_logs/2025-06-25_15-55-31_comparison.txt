@@ -1,0 +1,24 @@
+**Schema Comparison:**
+
+Both datasets have the same schema, with the same column names and data types. The columns are: 'track_id', 'track_name', 'artist', 'streams', 'in_spotify_playlists', 'in_apple_playlists', 'release_date', and 'genre'. This suggests that the datasets are designed to capture similar information, but we will explore further to identify any differences in sample data patterns.
+
+**Sample Data Patterns:**
+
+Upon examining the sample data, we notice that:
+
+* Both datasets have tracks with different 'track_id' values, indicating that the tracks are unique.
+* The 'artist' column has the same values in both datasets, suggesting that the artists are the same.
+* The 'genre' column also has the same values in both datasets, indicating that the genres are the same.
+* The 'streams' column has different values in both datasets, with Dataset 1 having higher values (755976, 796239, 1156840) compared to Dataset 2 (131958, 681155, 141932).
+* The 'in_spotify_playlists' and 'in_apple_playlists' columns have different values in both datasets, with Dataset 1 having higher values (16, 15, 62) compared to Dataset 2 (71, 60, 64).
+* The 'release_date' column has different values in both datasets, with Dataset 1 having dates in February 2024 and Dataset 2 having dates in January 2024.
+
+**Possible Insights or Red Flags:**
+
+From the sample data patterns, we can infer that:
+
+* Dataset 1 has tracks with higher streams and playlist appearances compared to Dataset 2.
+* The release dates in Dataset 1 are in February 2024, while in Dataset 2, they are in January 2024. This could indicate a possible time gap between the two datasets.
+* The values in the 'in_spotify_playlists' and 'in_apple_playlists' columns suggest that Dataset 1 has more tracks in playlists compared to Dataset 2.
+
+These insights and red flags can help inform further analysis and exploration of the datasets.

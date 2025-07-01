@@ -1,0 +1,35 @@
+**Schema Comparison**
+
+Both datasets have the same schema, with the following columns:
+
+1. `track_id` (object)
+2. `track_name` (object)
+3. `artist` (object)
+4. `streams` (int64)
+5. `in_spotify_playlists` (int64)
+6. `in_apple_playlists` (int64)
+7. `release_date` (object)
+8. `genre` (object)
+
+No schema differences were found between the two datasets.
+
+**Sample Data Patterns**
+
+Both datasets contain track information, with unique `track_id` values for each track. The `artist` column contains the same artist names, `track_name` contains unique track names, and `release_date` contains release dates in the format `YYYY-MM-DD`.
+
+Some notable patterns in the sample data:
+
+* Dataset 1 has more tracks from the `Indie` genre (2 out of 3 tracks), while Dataset 2 has more tracks from the `Rock` genre (2 out of 3 tracks).
+* Dataset 1 has a higher average `streams` value (266,246) compared to Dataset 2 (559,552).
+* Dataset 1 has a higher average `in_spotify_playlists` value (61.67) compared to Dataset 2 (24.33).
+
+**Possible Insights or Red Flags**
+
+Based on the sample data, it seems that:
+
+* Dataset 1 may have more tracks from emerging artists or genres, with lower `in_spotify_playlists` values.
+* Dataset 2 may have more tracks from established artists or genres, with higher `in_spotify_playlists` values.
+* The higher `streams` values in Dataset 1 may indicate a stronger online presence or popularity for these tracks.
+* The higher `in_apple_playlists` values in Dataset 2 may indicate a stronger presence on Apple Music playlists.
+
+These insights are based solely on the sample data and may not be representative of the full datasets.

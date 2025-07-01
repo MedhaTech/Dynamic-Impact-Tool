@@ -1,0 +1,30 @@
+**Schema Comparison**
+
+Both datasets have the same schema, with the same 7 columns:
+
+* `track_id`: object
+* `track_name`: object
+* `artist`: object
+* `streams`: int64
+* `in_spotify_playlists`: int64
+* `in_apple_playlists`: int64
+* `release_date`: object
+* `genre`: object
+
+**Sample Data Patterns**
+
+Both datasets have the same number of samples (3) and similar data patterns. However, there are some differences:
+
+* **Streams**: The maximum stream count in Dataset 1 is 681155, while in Dataset 2, it's 1156840. This suggests that Dataset 2 has more popular tracks.
+* **Genre**: Dataset 1 has tracks in the Indie and Hip-hop genres, while Dataset 2 has tracks in Indie, Rock, and Rock (again). This may indicate that Dataset 2 has a more diverse range of genres.
+* **Release Dates**: Both datasets have tracks released in the same year (2024), but Dataset 2 has tracks released slightly later (February) compared to Dataset 1 (January).
+
+**Possible Insights or Red Flags**
+
+Based on the comparison, some possible insights or red flags are:
+
+* **More popular tracks in Dataset 2**: The higher stream count in Dataset 2 suggests that these tracks may be more popular or well-known than those in Dataset 1.
+* **Genre diversity in Dataset 2**: The presence of Rock music in Dataset 2 may indicate a broader range of musical styles or a more diverse audience.
+* **Release date differences**: The slight difference in release dates between the two datasets may not be significant, but it's worth noting that Dataset 2 has tracks released slightly later in the year.
+
+Overall, while both datasets have similar schemas, there are some differences in the sample data patterns that may be worth exploring further.
