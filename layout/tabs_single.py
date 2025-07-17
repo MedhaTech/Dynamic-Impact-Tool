@@ -12,7 +12,88 @@ import json
 from utils.pdf_exporter import generate_pdf_report, export_to_pptx
 from layout import tabs_usage  
 
+def inject_auth_css():
+    st.markdown("""
+        <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .stApp {
+            background: transparent;
+        }
+
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-container img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            opacity: 0.25;
+            filter: blur(4px) brightness(1.1);
+        }
+
+        .auth-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            max-width: 420px;
+            margin: 8vh auto;
+        }
+
+        .auth-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 1.2rem;
+            font-weight: 700;
+            color: #1a2b4c;
+        }
+
+        @media screen and (max-width: 600px) {
+            .auth-box {
+                width: 90% !important;
+                padding: 1.5rem;
+                margin: 5vh auto;
+                border-radius: 12px;
+            }
+
+            .auth-title {
+                font-size: 1.4rem !important;
+            }
+
+            .stTextInput > div > input {
+                font-size: 16px !important;
+            }
+
+            button[kind="primary"] {
+                font-size: 16px !important;
+                padding: 0.6rem 1.2rem !important;
+            }
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+        <div class="bg-container">
+            <img src="https://img.freepik.com/premium-vector/serene-abstract-wave-background-with-calming-gradient-effect-great-ui-design_884160-1817.jpg" />
+        </div>
+    """, unsafe_allow_html=True)
+
+
 def render_single_tabs():
+    inject_auth_css()
     if st.session_state["current_session"] is None:
         st.info("Please upload a dataset to continue.")
         return

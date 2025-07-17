@@ -12,7 +12,90 @@ from utils.llm_selector import get_llm
 from utils.pdf_exporter import generate_pdf_report, export_to_pptx
 import re
 import json
+
+
+def inject_auth_css():
+    st.markdown("""
+        <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .stApp {
+            background: transparent;
+        }
+
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-container img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            opacity: 0.25;
+            filter: blur(4px) brightness(1.1);
+        }
+
+        .auth-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            max-width: 420px;
+            margin: 8vh auto;
+        }
+
+        .auth-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 1.2rem;
+            font-weight: 700;
+            color: #1a2b4c;
+        }
+
+        @media screen and (max-width: 600px) {
+            .auth-box {
+                width: 90% !important;
+                padding: 1.5rem;
+                margin: 5vh auto;
+                border-radius: 12px;
+            }
+
+            .auth-title {
+                font-size: 1.4rem !important;
+            }
+
+            .stTextInput > div > input {
+                font-size: 16px !important;
+            }
+
+            button[kind="primary"] {
+                font-size: 16px !important;
+                padding: 0.6rem 1.2rem !important;
+            }
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+        <div class="bg-container">
+            <img src="https://img.freepik.com/premium-vector/serene-abstract-wave-background-with-calming-gradient-effect-great-ui-design_884160-1817.jpg" />
+        </div>
+    """, unsafe_allow_html=True)
+
+
 def render_comparison_tabs():
+    inject_auth_css()
     if "current_compare" not in st.session_state or st.session_state["current_compare"] is None:
         st.info("Please upload two datasets to compare.")
         return
@@ -95,97 +178,6 @@ def render_comparison_tabs():
                     compare_session["visualization_history"].append(f"{chart_type} chart: {x_axis} vs {y_axis} (Side-by-Side)")
             except Exception as e:
                 st.error(f"Comparison visualization failed: {e}")
-
-    # ==================== Tab 2: Comparison Insights ==================== #
-    
- 
-    # with tab2:
-    #  st.header("🧠 Comparison Insights")
-
-    #  merged_df = pd.concat([df1.assign(dataset="Dataset 1"), df2.assign(dataset="Dataset 2")])
-    #  preview = merged_df.to_csv(index=False)[:10000]
-
-    #  col_left, col_right = st.columns([0.7, 0.3], gap="large")
-
-    #  with col_left:
-    #     st.markdown("### 📋 Generated Comparison Insights")
-    #     if compare_session["insights"]:
-    #         for insight in compare_session["insights"][::-1]:
-    #             with st.container(border=True):
-    #                 st.markdown(f"**🔍 {insight['question']}**")
-    #                 st.markdown(insight["result"])
-    #                 st.markdown("---")
-    #     else:
-    #         st.info("Please select a comparison insight question from the right to view the results.")
-
-    #  with col_right:
-    #     st.markdown("### 🔍 Comparison Insight Categories")
-
-    #     # Initialize accordion state
-    #     if "open_compare_category" not in st.session_state:
-    #         st.session_state["open_compare_category"] = None
-
-    #     # Scrollable container
-    #     with st.container(border=True):
-    #         st.markdown("<div style='height: 500px; overflow-y: auto; padding-right: 10px;'>", unsafe_allow_html=True)
-
-    #         if not compare_session.get("insight_categories"):
-    #             try:
-    #                 llm = get_llm("groq")
-
-    #                 prompt = f"""
-    #                 You are provided with the following combined dataset preview:
-    #                 {preview}
-
-    #                 The dataset contains records from two sources:
-    #                 - Dataset 1
-    #                 - Dataset 2
-
-    #                 Please generate 5-6 analytical comparison insight categories.
-    #                 For each category, provide 4-6 detailed comparison-based analytical questions that compare Dataset 1 and Dataset 2.
-
-    #                 ⚠️ IMPORTANT:
-    #                 Return strictly in the following JSON format:
-    #                 [
-    #                     {{
-    #                         "title": "Category Name",
-    #                         "questions": ["Question 1", "Question 2", "Question 3"]
-    #                     }},
-    #                     ...
-    #                 ]
-
-    #                 ❗ Do not include any introduction, explanation, or extra text. Only return the JSON array.
-    #                 """
-
-    #                 response = llm(prompt)
-    #                 if hasattr(response, "content"):
-    #                     response = response.content
-
-    #                 json_string = re.search(r"\[.*\]", response, re.DOTALL).group(0)
-    #                 categories = json.loads(json_string)
-    #                 compare_session["insight_categories"] = categories
-    #                 st.toast("✅ Comparison insight categories loaded successfully.")
-    #                 st.rerun()
-    #             except Exception as e:
-    #                 st.error(f"Comparison insight suggestion failed: {e}")
-    #                 compare_session["insight_categories"] = []
-
-    #         for idx, category in enumerate(compare_session.get("insight_categories", [])):
-    #             expanded = st.session_state["open_compare_category"] == idx
-    #             with st.expander(f"📂 {category['title']}", expanded=expanded):
-    #                 for question in category.get("questions", []):
-    #                     if st.button(f"🔎 {question}", key=f"compare_insight_{idx}_{question}"):
-    #                         try:
-    #                             result = generate_insights(merged_df, question, "groq")
-    #                             compare_session["insights"].append({"question": question, "result": result})
-    #                             st.session_state["open_compare_category"] = idx
-    #                             st.rerun()
-    #                         except Exception as e:
-    #                             st.error(f"Comparison insight generation failed: {e}")
-
-    #         st.markdown("</div>", unsafe_allow_html=True)
-
-
 
     with tab2:
      st.header("🧠 Comparison Insights")
@@ -283,173 +275,6 @@ def render_comparison_tabs():
                         except Exception as e:
                             st.error(f"Comparison insight generation failed: {e}")
 
-    # with tab2:
-       
-    #  st.header("🧠 Comparison Insights")
-
-    #  merged_df = pd.concat([df1.assign(dataset="Dataset 1"), df2.assign(dataset="Dataset 2")])
-    #  preview = merged_df.to_csv(index=False)[:10000]
-
-    #  col_left, col_right = st.columns([7, 3], gap="large")
-
-    #  with col_left:
-    #     st.markdown("### 📋 Generated Comparison Insights")
-    #     if compare_session["insights"]:
-    #         for insight in compare_session["insights"][::-1]:
-    #             with st.container(border=True):
-    #                 st.markdown(f"**🔍 {insight['question']}**")
-    #                 st.markdown(insight["result"])
-    #                 st.markdown("---")
-    #     else:
-    #         st.info("Please select a comparison insight question from the right to view the results.")
-
-    #  with col_right:
-    #     st.markdown("### 🔍 Comparison Insight Categories")
-
-    #     if not compare_session.get("insight_categories"):
-    #         try:
-    #             llm = get_llm("groq")
-
-    #             prompt = f"""
-    #             You are provided with the following combined dataset preview:
-    #             {preview}
-
-    #             The dataset contains records from two sources:
-    #             - Dataset 1
-    #             - Dataset 2
-
-    #             Please generate 5-6 analytical comparison insight categories.
-    #             For each category, provide 4-6 detailed comparison-based analytical questions that compare Dataset 1 and Dataset 2.
-
-    #             Example questions:
-    #             - How do the average values of column X compare between Dataset 1 and Dataset 2?
-    #             - Which dataset has higher variability in column Y?
-    #             - Is there a noticeable difference in trends for column Z across datasets?
-
-    #             ⚠️ IMPORTANT:
-    #             Return strictly in the following JSON format:
-    #             [
-    #                 {{
-    #                     "title": "Category Name",
-    #                     "questions": ["Question 1", "Question 2", "Question 3"]
-    #                 }},
-    #                 ...
-    #             ]
-
-    #             ❗ Do not include any introduction, explanation, or extra text. Only return the JSON array.
-    #             """
-
-    #             response = llm(prompt)
-    #             if hasattr(response, "content"):
-    #                 response = response.content
-
-    #             json_string = re.search(r"\[.*\]", response, re.DOTALL).group(0)
-    #             categories = json.loads(json_string)
-    #             compare_session["insight_categories"] = categories
-    #             st.toast("✅ Comparison insight categories loaded successfully.")
-    #             st.rerun()
-
-    #         except Exception as e:
-    #             st.error(f"Comparison insight suggestion failed: {e}")
-    #             compare_session["insight_categories"] = []
-
-    #     for idx, category in enumerate(compare_session.get("insight_categories", [])):
-    #         with st.expander(f"📂 {category['title']}", expanded=False):
-    #             for question in category.get("questions", []):
-    #                 if st.button(f"🔎 {question}", key=f"compare_insight_{idx}_{question}"):
-    #                     try:
-    #                         result = generate_insights(merged_df, question, "groq")
-    #                         compare_session["insights"].append({"question": question, "result": result})
-    #                         st.rerun()
-    #                     except Exception as e:
-    #                         st.error(f"Comparison insight generation failed: {e}")
-
-    #  st.header("🧠 Suggested Comparison Insights")
-
-    #  merged_df = pd.concat([df1.assign(dataset="Dataset 1"), df2.assign(dataset="Dataset 2")])
-    #  preview = merged_df.head(10).to_csv(index=False)[:2048]
-
-    # # Ensure suggestions exist and are not empty
-    #  if "compare_insight_suggestions" not in compare_session or not compare_session["compare_insight_suggestions"]:
-    #     try:
-    #         suggestions = generate_comparison_insight_suggestions(df1, df2, "groq")
-    #         compare_session["compare_insight_suggestions"] = suggestions if suggestions else []
-    #         st.toast("✅ Comparison insight suggestions loaded successfully.")
-    #     except Exception as e:
-    #         st.warning(f"Insight suggestion failed: {e}")
-    #         compare_session["compare_insight_suggestions"] = []
-
-    # # Layout for results and suggestions
-    #  col_left, col_right = st.columns([7, 3], gap="large")
-
-    # with col_left:
-    #     st.markdown("### 📋 Generated Comparison Insights")
-    #     if compare_session["insights"]:
-    #         for insight in compare_session["insights"][::-1]:
-    #             with st.container(border=True):
-    #                 st.markdown(f"**🔍 {insight['question']}**")
-    #                 st.markdown(insight["result"])
-    #                 st.markdown("---")
-    #     else:
-    #         st.info("Please select a comparison insight from the right to view the results.")
-
-    # with col_right:
-    #     titles = [s["title"] for s in compare_session.get("compare_insight_suggestions", [])]
-    #     if titles:
-    #         selected_title = st.selectbox("Select Comparison Insight", titles, key="select_comparison_insight")
-    #         if st.button("Generate Comparison Insight", key="generate_comparison_insight"):
-    #             try:
-    #                 result = generate_insights(merged_df, selected_title, "groq")
-    #                 compare_session["insights"].append({"question": selected_title, "result": result})
-    #                 st.experimental_rerun()
-    #             except Exception as e:
-    #                 st.error(f"Insight generation failed: {str(e)}")
-    #     else:
-    #         st.warning("No comparison insights available. Please try reloading or re-uploading the datasets.")
-
-    # with tab2:
-    #     st.header("🧠 Suggested Comparison Insights")
-
-    #     merged_df = pd.concat([df1.assign(dataset="Dataset 1"), df2.assign(dataset="Dataset 2")])
-    #     preview = merged_df.head(10).to_csv(index=False)[:2048]
-
-    #     if "compare_insight_suggestions" not in compare_session:
-    #         try:
-    #             suggestions =generate_comparison_insight_suggestions(preview, "groq")
-    #             compare_session["compare_insight_suggestions"] = suggestions
-    #             st.toast("✅ Comparison insight suggestions loaded successfully.")
-    #             st.rerun()
-    #         except Exception as e:
-    #             st.warning(f"Insight suggestion failed: {e}")
-    #             compare_session["compare_insight_suggestions"] = []
-
-    #     col_left, col_right = st.columns([7, 3], gap="large")
-
-    #     with col_left:
-    #         st.markdown("### 📋 Generated Comparison Insights")
-    #         if compare_session["insights"]:
-    #             for insight in compare_session["insights"][::-1]:
-    #                 with st.container(border=True):
-    #                     st.markdown(f"**🔍 {insight['question']}**")
-    #                     st.markdown(insight["result"])
-    #                     st.markdown("---")
-    #         else:
-    #             st.info("Please select a comparison insight from the right to view the results.")
-
-    #     with col_right:
-    #         titles = [s["title"] for s in compare_session.get("compare_insight_suggestions", [])]
-    #         if titles:
-    #             selected_title = st.selectbox("Select Comparison Insight", titles, key="select_comparison_insight")
-    #             if st.button("Generate Comparison Insight", key="generate_comparison_insight"):
-    #                 try:
-    #                     result = generate_insights(merged_df, selected_title, "groq")
-    #                     compare_session["insights"].append({"question": selected_title, "result": result})
-    #                     st.rerun()
-    #                 except Exception as e:
-    #                     st.error(f"Insight generation failed: {str(e)}")
-    #         else:
-    #             st.warning("No comparison insights available.")
-
     # ==================== Chatbot (Comparison Specific) ==================== #
     st.markdown("---")
     st.subheader("💬 Chat About This Comparison")
@@ -484,28 +309,4 @@ def render_comparison_tabs():
                 st.download_button("Download PPTX", f, file_name="comparison_summary.pptx")
         except Exception as e:
             st.error(f"Failed to export PPTX: {e}")
-
-    # from utils.pdf_exporter import generate_pdf_report, export_to_pptx
-
-    # st.markdown("---")
-    # st.subheader("📁 Export Report")
-
-    # col1, col2 = st.columns(2)
-    # with col1:
-    #   if st.button("📄 Export PDF (Comparison)", key="export_compare_pdf"):
-    #     try:
-    #         pdf_path = generate_pdf_report(compare_session, compare_mode=True)
-    #         with open(pdf_path, "rb") as f:
-    #             st.download_button("Download PDF", f, file_name="comparison_report.pdf")
-    #     except Exception as e:
-    #         st.error(f"Failed to export PDF: {e}")
-
-    # with col2:
-    #   if st.button("📊 Export PPTX (Comparison)", key="export_compare_pptx"):
-    #     try:
-    #         pptx_path = export_to_pptx(compare_session, compare_mode=True)
-    #         with open(pptx_path, "rb") as f:
-    #             st.download_button("Download PPTX", f, file_name="comparison_report.pptx")
-    #     except Exception as e:
-    #         st.error(f"Failed to export PPTX: {e}")
 

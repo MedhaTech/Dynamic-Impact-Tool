@@ -7,3 +7,10 @@ __pycache__/
 
 # Ignore Streamlit secrets (local only)
 .streamlit/secrets.toml
+export/
+venv/
+audit_log.json
+config.toml
+saved_session.json
+logs.json
+user.json
