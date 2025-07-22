@@ -108,11 +108,11 @@ def render_comparison_tabs():
 
     st.success(f"Currently Comparing: {compare_key}")
 
-    tab1, tab2, tab3 = st.tabs(["📋 Dataset Previews", "🧠 Comparison Insights", "Visualizations"])
+    tab1, tab2, tab3 = st.tabs(["Dataset Previews", "Comparison Insights", "Visualizations"])
 
     # ==================== Tab 1: Dataset Previews & Visualizations ==================== #
     with tab1:
-        st.header("📋 Dataset Previews")
+        st.header("Dataset Previews")
 
         col1, col2 = st.columns(2)
         with col1:
@@ -122,25 +122,25 @@ def render_comparison_tabs():
             st.markdown("#### Dataset 2")
             st.dataframe(df2.head(), use_container_width=True)
 
-        st.subheader("🧠 AI + User Column Selector")
+        st.subheader("AI + User Column Selector")
 
         ai_cols1 = get_important_columns(df1.to_csv(index=False), "groq")
         ai_cols1 = [col.strip().lower() for col in ai_cols1]
 
         matched_in_df2 = [col for col in ai_cols1 if col in df2.columns]
         missing_in_df2 = list(set(ai_cols1) - set(matched_in_df2))
-        st.info(f"⚠️ Missing in Dataset 2: {', '.join(missing_in_df2) if missing_in_df2 else 'None'}")
+        st.info(f"Missing in Dataset 2: {', '.join(missing_in_df2) if missing_in_df2 else 'None'}")
 
         col1, col2 = st.columns(2)
         with col1:
-            user_cols1 = st.multiselect("✅ Select Additional Columns from Dataset 1", df1.columns.tolist(), default=ai_cols1, key="manual_cols_1")
+            user_cols1 = st.multiselect("Select Additional Columns from Dataset 1", df1.columns.tolist(), default=ai_cols1, key="manual_cols_1")
             final_cols1 = list(set(ai_cols1 + user_cols1))
             st.success(f"Selected Columns in Dataset 1: {final_cols1}")
         with col2:
             final_cols2 = [col for col in final_cols1 if col in df2.columns]
             st.success(f"Matched Columns in Dataset 2: {final_cols2}")
             if not final_cols2:
-                st.warning("🚫 No common columns between selected Dataset 1 columns and Dataset 2.")
+                st.warning("No common columns between selected Dataset 1 columns and Dataset 2.")
 
         df1 = df1[final_cols1] if final_cols1 else df1
         df2 = df2[final_cols2] if final_cols2 else df2
@@ -157,7 +157,7 @@ def render_comparison_tabs():
       
 
     with tab3:
-        st.header("📊 Comparison Visualizations")
+        st.header("Comparison Visualizations")
         x_axis = st.selectbox("Select X-Axis for Comparison", common_cols, key="compare_x_axis")
         y_axis = st.selectbox("Select Y-Axis for Comparison", common_cols, key="compare_y_axis")
         chart_type = st.selectbox("Chart Type", ["bar", "line", "scatter"], key="compare_chart")
@@ -180,7 +180,7 @@ def render_comparison_tabs():
                 st.error(f"Comparison visualization failed: {e}")
 
     with tab2:
-     st.header("🧠 Comparison Insights")
+     st.header("Comparison Insights")
 
      merged_df = pd.concat([df1.assign(dataset="Dataset 1"), df2.assign(dataset="Dataset 2")])
      preview = merged_df.to_csv(index=False)[:10000]
@@ -188,7 +188,7 @@ def render_comparison_tabs():
      col_left, col_right = st.columns([7, 3], gap="large")
 
      with col_left:
-        st.markdown("### 📋 Generated Comparison Insights")
+        st.markdown("### Generated Comparison Insights")
         if compare_session["insights"]:
             for insight in compare_session["insights"][::-1]:
                 with st.container(border=True):
@@ -198,7 +198,7 @@ def render_comparison_tabs():
                     # === Visualization Trigger Detection ===
                     if any(keyword in insight["result"].lower() for keyword in ["[insert graph here]", "visual representation:", "see the graph", "following graph"]):
                         try:
-                            st.markdown("**📈 Auto-Generated Graph:**")
+                            st.markdown("**Auto-Generated Graph:**")
                             import plotly.express as px
 
                             numeric_cols = merged_df.select_dtypes(include='number').columns.tolist()
@@ -237,7 +237,7 @@ def render_comparison_tabs():
                 - Which dataset has higher variability in column Y?
                 - Is there a noticeable difference in trends for column Z across datasets?
 
-                ⚠️ IMPORTANT:
+                IMPORTANT:
                 Return strictly in the following JSON format:
                 [
                     {{
@@ -247,7 +247,7 @@ def render_comparison_tabs():
                     ...
                 ]
 
-                ❗ Do not include any introduction, explanation, or extra text. Only return the JSON array.
+                Do not include any introduction, explanation, or extra text. Only return the JSON array.
                 """
 
                 response = llm(prompt)
@@ -257,7 +257,7 @@ def render_comparison_tabs():
                 json_string = re.search(r"\[.*\]", response, re.DOTALL).group(0)
                 categories = json.loads(json_string)
                 compare_session["insight_categories"] = categories
-                st.toast("✅ Comparison insight categories loaded successfully.")
+                st.toast("Comparison insight categories loaded successfully.")
                 st.rerun()
 
             except Exception as e:
@@ -265,9 +265,9 @@ def render_comparison_tabs():
                 compare_session["insight_categories"] = []
 
         for idx, category in enumerate(compare_session.get("insight_categories", [])):
-            with st.expander(f"📂 {category['title']}", expanded=False):
+            with st.expander(f"{category['title']}", expanded=False):
                 for question in category.get("questions", []):
-                    if st.button(f"🔎 {question}", key=f"compare_insight_{idx}_{question}"):
+                    if st.button(f"{question}", key=f"compare_insight_{idx}_{question}"):
                         try:
                             result = generate_insights(merged_df, question, "groq")
                             compare_session["insights"].append({"question": question, "result": result})
@@ -277,23 +277,118 @@ def render_comparison_tabs():
 
     # ==================== Chatbot (Comparison Specific) ==================== #
     st.markdown("---")
-    st.subheader("💬 Chat About This Comparison")
+    with st.expander("Chat About This Comparison", expanded=True):
+        # WhatsApp-style Chat CSS
+        st.markdown(
+            """
+            <style>
+            .chat-container {
+                max-height: 420px;
+                overflow-y: auto;
+                padding: 1rem;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                background-color: rgba(240, 240, 240, 0.05);
+                border-radius: 12px;
+            }
 
-    compare_prompt = st.chat_input("Ask a question about this comparison...", key="comparison_chat_input")
-    if compare_prompt:
-        with st.spinner("Thinking..."):
-            result = safe_llm_call(handle_user_query_dynamic, compare_prompt, merged_df, "groq", default={"response": "No response."})
-        compare_session["chat_history"].append({"user": compare_prompt, "assistant": result})
+            .chat-row {
+                display: flex;
+                flex-direction: column;
+                max-width: 85%;
+            }
 
-    for msg in compare_session["chat_history"][::-1]:
-        with st.chat_message("user"):
-            st.markdown(msg["user"])
-        with st.chat_message("assistant"):
-            st.markdown(msg["assistant"].get("response", msg["assistant"]))
+            .chat-row.user {
+                align-self: flex-end;
+                text-align: right;
+            }
 
+            .chat-row.assistant {
+                align-self: flex-start;
+                text-align: left;
+            }
+
+            .chat-label {
+                font-weight: bold;
+                font-size: 0.85rem;
+                margin-bottom: 0.25rem;
+                color: #bbb;
+            }
+
+            .chat-bubble {
+                padding: 0.75rem 1rem;
+                border-radius: 12px;
+                background-color: rgba(255, 255, 255, 0.06);
+                color: white;
+                word-wrap: break-word;
+            }
+
+            .chat-row.user .chat-bubble {
+                background-color: rgba(180, 220, 255, 0.1);
+            }
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        if "compare_chat_history" not in st.session_state:
+            st.session_state.compare_chat_history = []
+
+        with st.container():
+            st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+            for msg in st.session_state.compare_chat_history:
+                if "user" in msg:
+                    st.markdown(
+                        f"""
+                        <div class="chat-row user">
+                            <div class="chat-label">**User**</div>
+                            <div class="chat-bubble">{msg["user"]}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                if "assistant" in msg:
+                    response = msg["assistant"].get("response", msg["assistant"])
+                    st.markdown(
+                        f"""
+                        <div class="chat-row assistant">
+                            <div class="chat-label">**AI**</div>
+                            <div class="chat-bubble">{response}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+                    # Optional: Display chart
+                    if "chart" in msg["assistant"]:
+                        chart_type = msg["assistant"]["chart"]["type"]
+                        data = msg["assistant"]["chart"]["data"]
+                        x_col = msg["assistant"]["chart"].get("x")
+                        y_col = msg["assistant"]["chart"].get("y")
+                        chart_df = pd.DataFrame(data)
+
+                        if chart_type == "bar":
+                            st.bar_chart(chart_df.set_index(x_col)[y_col])
+                        elif chart_type == "line":
+                            st.line_chart(chart_df.set_index(x_col)[y_col])
+                        elif chart_type == "pie":
+                            fig = px.pie(chart_df, names=x_col, values=y_col, title="Pie Chart")
+                            st.plotly_chart(fig, use_container_width=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        # Chat Input
+        compare_prompt = st.chat_input("Ask a question about this comparison...", key="comparison_chat_input")
+        if compare_prompt:
+            st.session_state.compare_chat_history.append({"user": compare_prompt})
+            with st.spinner("Thinking..."):
+                result = safe_llm_call(handle_user_query_dynamic, compare_prompt, merged_df, "groq", default={"response": "No response."})
+            st.session_state.compare_chat_history[-1]["assistant"] = result
+            st.rerun()
+    
     with col_right:
-     st.markdown("### 📥 Export Report")
-     if st.button("📄 Export PDF", key="export_pdf_compare"):
+     st.markdown("### Export Report")
+     if st.button("Export PDF", key="export_pdf_compare"):
         try:
             compare_session["name"] = st.session_state["current_session"]
             pdf_path = generate_pdf_report(compare_session, filename="comparison_summary.pdf")
@@ -302,11 +397,10 @@ def render_comparison_tabs():
         except Exception as e:
             st.error(f"Failed to export PDF: {e}")
 
-     if st.button("📊 Export PPTX", key="export_pptx_compare"):
+     if st.button("Export PPTX", key="export_pptx_compare"):
         try:
             pptx_path = export_to_pptx(compare_session, filename="comparison_summary.pptx")
             with open(pptx_path, "rb") as f:
                 st.download_button("Download PPTX", f, file_name="comparison_summary.pptx")
         except Exception as e:
             st.error(f"Failed to export PPTX: {e}")
-

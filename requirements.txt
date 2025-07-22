@@ -15,6 +15,4 @@ fpdf2
 openai
 langchain-openai
 bcrypt
-streamlit-authenticator
-streamlit-tourguide
-streamlit-apex_charts
+mysql-connector-python

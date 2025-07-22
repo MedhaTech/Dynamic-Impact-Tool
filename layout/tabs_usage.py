@@ -30,7 +30,7 @@ def usage_tab():
 
     st.write("---")
 
-    st.write("### 🔢 Total Usage per User")
+    st.write("### Total Usage per User")
     summary = df.groupby("user_id").agg(
         total_tokens=("total_tokens", "sum"),
         total_cost=("cost", "sum"),
@@ -45,7 +45,7 @@ def usage_tab():
 
     st.write("---")
 
-    st.write("### 📅 Filter by Date Range")
+    st.write("### Filter by Date Range")
     min_date, max_date = df["timestamp"].min(), df["timestamp"].max()
     start_date = st.date_input("Start date", min_value=min_date.date(), max_value=max_date.date(), value=min_date.date())
     end_date = st.date_input("End date", min_value=min_date.date(), max_value=max_date.date(), value=max_date.date())

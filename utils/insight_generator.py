@@ -1,6 +1,6 @@
 # utils/insight_generator.py
 import pandas as pd
-from utils.groq_handler import call_openai_model
+from utils.groq_handler import call_groq_model
 
 from utils.logger import logger
 
@@ -8,7 +8,7 @@ from utils.llm_selector import get_llm
 import re
 import json
 
-def generate_comparison_insight_suggestions(df1, df2, model_source="openai"):
+def generate_comparison_insight_suggestions(df1, df2, model_source="groq"):
     """
     Generate comparison insight suggestions between two datasets using the LLM.
     """
@@ -26,7 +26,7 @@ def generate_comparison_insight_suggestions(df1, df2, model_source="openai"):
     Generate exactly 5-6 comparison insight categories.
     Each category should have exactly 4-6 detailed analytical questions comparing Dataset 1 and Dataset 2.
 
-    ⚠️ IMPORTANT:
+     IMPORTANT:
     Return the response strictly in this JSON format:
     [
         {{
@@ -36,7 +36,7 @@ def generate_comparison_insight_suggestions(df1, df2, model_source="openai"):
         ...
     ]
 
-    ❗ Do not include any introduction, explanation, or extra text. Only return the JSON array.
+     Do not include any introduction, explanation, or extra text. Only return the JSON array.
     """
 
     try:
@@ -56,7 +56,7 @@ def generate_comparison_insight_suggestions(df1, df2, model_source="openai"):
 
 
 
-def generate_insights(df: pd.DataFrame, insight_type: str, model_source: str = "openai") -> str:
+def generate_insights(df: pd.DataFrame, insight_type: str, model_source: str = "groq") -> str:
     preview = df.head(100).to_csv(index=False)
 
     prompt = f"""
@@ -68,15 +68,15 @@ Data Preview (first 100 rows):
 """
 
     try:
-        if model_source == "openai":
-            return call_openai_model("Generate Insight", prompt)
+        if model_source == "groq":
+            return call_groq_model("Generate Insight", prompt)
         
     except Exception as e:
         logger.error(f"Insight generation failed: {e}")
         return "Insight generation failed."
 
 
-def generate_comparison_insights(df1: pd.DataFrame, df2: pd.DataFrame, model_source: str = "openai") -> list:
+def generate_comparison_insights(df1: pd.DataFrame, df2: pd.DataFrame, model_source: str = "groq") -> list:
     try:
         merged_preview = pd.concat([
             df1.head(50).assign(dataset="Dataset 1"),
@@ -91,8 +91,8 @@ Data Preview:
 {merged_preview.to_csv(index=False)[:3000]}
 """
 
-        if model_source == "openai":
-            response = call_openai_model("Suggest Comparison Insights", prompt)
+        if model_source == "groq":
+            response = call_groq_model("Suggest Comparison Insights", prompt)
         
 
         import json

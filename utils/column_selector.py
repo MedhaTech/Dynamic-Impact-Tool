@@ -3,7 +3,7 @@ from io import StringIO
 from utils.llm_selector import get_llm
 from utils.logger import logger
 
-def get_important_columns(csv_data: str, model_source="openai") -> list:
+def get_important_columns(csv_data: str, model_source="groq") -> list:
     """
     Extract important columns from a dataset preview using AI logic.
 
@@ -50,22 +50,3 @@ Dataset preview:
     except Exception as e:
         logger.error(f"Failed to select important columns: {e}")
         return df.columns[:7].tolist() if 'df' in locals() else []
-    
-# from utils.llm_selector import get_llm
-# import json
-
-# def get_important_columns(csv_data, model_source="groq"):
-#     llm = get_llm(model_source)
-#     prompt = f"""
-# Given the following dataset (CSV preview), identify and return the most important 3–7 columns for analysis.
-
-# Dataset:
-# {csv_data}
-
-# Return output as a Python list of column names.
-# """
-#     response = llm(prompt)
-#     try:
-#         return eval(response) if isinstance(response, str) else response
-#     except:
-#         return []

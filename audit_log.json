@@ -1916,5 +1916,215 @@
     "actor": "",
     "target": null,
     "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:32:29.849529",
+    "event": "login",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:36:15.191077",
+    "event": "signup",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:36:21.255112",
+    "event": "login",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:36:22.110645",
+    "event": "signup",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:36:32.122587",
+    "event": "login",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:36:44.106006",
+    "event": "login",
+    "actor": "immanuel",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:36:47.135242",
+    "event": "login",
+    "actor": "immanuel",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:36:47.264610",
+    "event": "login",
+    "actor": "immanuel",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:36:53.475258",
+    "event": "login",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:36:56.295938",
+    "event": "login",
+    "actor": "Immanuel",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:37:04.538542",
+    "event": "login",
+    "actor": "Immanuel",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:37:04.690706",
+    "event": "login",
+    "actor": "Immanuel",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:37:50.199950",
+    "event": "login",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:37:52.149466",
+    "event": "signup",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:38:19.754583",
+    "event": "login",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:38:25.825115",
+    "event": "login",
+    "actor": "Immanuel",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:38:28.379121",
+    "event": "login",
+    "actor": "Immanuel",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-17 20:38:28.485785",
+    "event": "login",
+    "actor": "Immanuel",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-18 09:44:42.063550",
+    "event": "login",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-18 09:45:32.106509",
+    "event": "login",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-18 10:01:22.618355",
+    "event": "signup",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-18 10:01:26.601731",
+    "event": "login",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-18 10:01:37.451619",
+    "event": "login",
+    "actor": "Immanuel",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-18 10:01:40.433454",
+    "event": "login",
+    "actor": "Immanuel",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-18 10:01:40.636901",
+    "event": "login",
+    "actor": "Immanuel",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-18 10:04:46.216154",
+    "event": "delete_user",
+    "actor": "Immanuel",
+    "target": "test4",
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-18 10:06:52.595205",
+    "event": "login",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-18 10:06:54.144845",
+    "event": "login",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-18 10:06:55.618512",
+    "event": "signup",
+    "actor": "",
+    "target": null,
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-18 10:08:20.316649",
+    "event": "login",
+    "actor": "",
+    "target": null,
+    "details": ""
   }
 ]

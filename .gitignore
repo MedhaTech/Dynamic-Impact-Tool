@@ -5,12 +5,17 @@ __pycache__/
 # Ignore environment files
 .env
 
+venv/bin
+venv/etc
+venv/include
+venv/lib
+venv/share
+venv/pyvenv.cfg
 # Ignore Streamlit secrets (local only)
 .streamlit/secrets.toml
 export/
 venv/
 audit_log.json
-config.toml
 saved_session.json
 logs.json
-user.json
+users.json

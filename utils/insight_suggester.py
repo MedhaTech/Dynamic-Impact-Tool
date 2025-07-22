@@ -1,38 +1,8 @@
+# utils/insight_suggester.py
 import json
 from utils.llm_selector import get_llm
 import streamlit as st
-# def generate_insight_suggestions(csv_data, model_source="groq"):
-#     llm = get_llm(model_source)
-
-#     # Truncate CSV to max ~2048 characters
-#     preview = csv_data[:2048]
-
-#     prompt = f"""You are an AI data analyst. Given this CSV preview, suggest 3 insights in JSON.
-
-# CSV:
-# {preview}
-
-# Respond ONLY in this exact JSON format:
-# [
-#   {{ "title": "..." }},
-#   {{ "title": "..." }},
-#   {{ "title": "..." }}
-# ]
-# """
-
-#     response = llm(prompt).strip()
-
-#     try:
-#         return json.loads(response)
-#     except json.JSONDecodeError:
-#         from utils.json_utils import extract_json_list
-#         suggestions = extract_json_list(response)
-#         if suggestions:
-#             return suggestions
-#         raise ValueError(f"Failed to parse JSON. Raw response: {response}")
-
-
-def generate_insight_suggestions(preview_data, model_source="openai"):
+def generate_insight_suggestions(preview_data, model_source="groq"):
     """
     Generate categorized insight suggestions using the selected LLM.
     Returns a list of categories, each with a list of questions.
@@ -88,12 +58,7 @@ def generate_insight_suggestions(preview_data, model_source="openai"):
             }
         ]
 
-
-
-
-
-
-def generate_insights(df, title, model_source="openai"):
+def generate_insights(df, title, model_source="groq"):
     llm = get_llm(model_source)
     # preview = df.to_csv(index=False)[:10000]
     dataset =df
@@ -111,71 +76,19 @@ Respond in markdown format with your full analysis.
 
     return llm(prompt)
 
-
-
-
-
-
-def generate_comparison_insights(df1, df2, model_source="openai"):
+def generate_comparison_analysis(df1, df2, title, model_source="groq"):
     llm = get_llm(model_source)
+    prompt = f"""
+    You are a data analyst. Perform a deep comparison between the two datasets based on this selected title:
 
-    sample1 = df1.to_csv(index=False)[:10000]
-    sample2 = df2.to_csv(index=False)[:10000]
+    Comparison Title: {title}
 
-    prompt = f"""You are a data analyst. Given these two datasets, suggest 3 insightful comparisons a user may want to explore.
+    Dataset 1:
+    {df1.to_csv(index=False)[:5000]}
 
-Dataset 1:
-{sample1}
+    Dataset 2:
+    {df2.to_csv(index=False)[:5000]}
 
-Dataset 2:
-{sample2}
-
-Respond in JSON format:
-[
-  {{ "title": "...", "description": "..." }},
-  ...
-]
-"""
-
-    response = llm(prompt).strip()
-
-    try:
-        return json.loads(response)
-    except json.JSONDecodeError:
-        from utils.json_utils import extract_json_list
-        return extract_json_list(response)
-
-
-
-
-
-
-# import json
-# from utils.llm_selector import get_llm
-# from utils.json_utils import extract_json_list  # You’ll add this next
-
-# def generate_comparison_insights(df1, df2, model_source="groq"):
-#     llm = get_llm(model_source)
-
-#     prompt = f"""You are a data analyst. Given two datasets (CSV previews), suggest 3 insightful comparisons.
-
-# Dataset 1:
-# {df1.head(10).to_csv(index=False)}
-
-# Dataset 2:
-# {df2.head(10).to_csv(index=False)}
-
-# Respond ONLY in JSON like:
-# [
-#   {{ "title": "Insight 1", "description": "..." }},
-#   ...
-# ]
-# """
-
-#     response = llm(prompt).strip()
-
-#     try:
-#         return json.loads(response)
-#     except json.JSONDecodeError:
-#         # try to extract JSON manually from partial responses
-#         return extract_json_list(response)
+    Respond in markdown format.
+    """
+    return llm(prompt)

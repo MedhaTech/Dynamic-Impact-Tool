@@ -3,7 +3,7 @@ from io import BytesIO
 from utils.file_loader import load_data, clean_data
 
 def render_upload_area():
-    st.markdown("## 📤 Upload Dataset(s)")
+    st.markdown("## Upload Dataset(s)")
 
     if st.session_state["mode"] == "single":
         col1, col2 = st.columns(2)
@@ -32,7 +32,7 @@ def render_upload_area():
 
 
                 st.session_state["current_session"] = file_name
-                st.toast(f"✅ {file_name} uploaded successfully.")
+                st.toast(f"{file_name} uploaded successfully.")
                 st.rerun()
 
             elif file_path:
@@ -53,7 +53,7 @@ def render_upload_area():
                         }
 
                     st.session_state["current_session"] = file_name
-                    st.toast(f"✅ {file_name} uploaded successfully.")
+                    st.toast(f"{file_name} uploaded successfully.")
                     st.rerun()
 
                 except Exception as e:
@@ -104,7 +104,7 @@ def render_upload_area():
 
 
                 st.session_state["current_compare"] = compare_key
-                st.toast(f"✅ Comparison loaded: {compare_key}")
+                st.toast(f"Comparison loaded: {compare_key}")
                 st.rerun()
 
             except Exception as e:
