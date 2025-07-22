@@ -3,16 +3,9 @@ __pycache__/
 
 .env
 
-venv/bin
-venv/etc
-venv/include
-venv/lib
-venv/share
-venv/pyvenv.cfg
-.streamlit/secrets.toml
-export/
+exports/
 venv/
 audit_log.json
 saved_session.json
 logs.json
-users.jsonw
+users.json
