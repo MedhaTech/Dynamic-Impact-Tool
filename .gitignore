@@ -9,3 +9,4 @@ audit_log.json
 saved_session.json
 logs.json
 users.json
+mongo_db

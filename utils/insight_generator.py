@@ -53,9 +53,6 @@ def generate_comparison_insight_suggestions(df1, df2, model_source="groq"):
         raise RuntimeError(f"Failed to generate comparison insight suggestions: {str(e)}")
 
 
-
-
-
 def generate_insights(df: pd.DataFrame, insight_type: str, model_source: str = "groq") -> str:
     preview = df.head(100).to_csv(index=False)
 

@@ -82,6 +82,15 @@ def render_guided_tour():
     st.title("Welcome to the Dynamic Impact Tool Tour")
 
     st.markdown("""
+    ### What is the Dynamic Impact Tool?
+    The **Dynamic Impact Tool** is an AI-powered data exploration and insight generation platform designed for rapid and intuitive analysis of structured datasets.  
+    Whether you're a data analyst, business user, or student — this tool helps you:
+    - Upload and preview datasets easily.
+    - Generate actionable insights using LLMs.
+    - Visualize trends and patterns with a few clicks.
+    - Chat with your data for instant answers.
+    - Export professional-grade reports.
+
     This quick tour will walk you through the main features of the app so you can get the most out of your data.
     """)
 
@@ -126,3 +135,6 @@ def render_guided_tour():
 
     st.markdown("---")
     st.success("You're all set! Head over to the **Dashboard** tab to explore for real.")
+    if st.button("Go to Dashboard"):
+        st.query_params.update(page="Dashboard")
+        st.rerun()
