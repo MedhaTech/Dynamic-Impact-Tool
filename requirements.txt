@@ -18,3 +18,8 @@ bcrypt
 mysql-connector-python
 pymongo
 matplotlib
+kaleido
+tabulate
+fonttools
+python-pptx
+kaleido

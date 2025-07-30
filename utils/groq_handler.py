@@ -1,6 +1,6 @@
 # # utils/groq_handler.py
 
-# import os
+import os
 from groq import Groq
 from langchain_community.llms import Ollama
 

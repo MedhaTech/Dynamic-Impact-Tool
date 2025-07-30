@@ -845,9 +845,11 @@ def render_comparison_tabs():
 
             st.rerun()
 
-    with col_right:
-     st.markdown("### 📥 Export Report")
-     if st.button("📄 Export Comparison Report", key="export_pdf_compare"):
+    col1, col2 = st.columns(2)
+
+    with col1:
+     st.markdown("###  Export Report")
+     if st.button(" Export Comparison Report", key="export_pdf_compare"):
         try:
             compare_session["name"] = st.session_state["current_session"]
             st.session_state["comparison_insight_results"] = compare_session.get("insights", [])

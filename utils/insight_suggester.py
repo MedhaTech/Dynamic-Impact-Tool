@@ -78,17 +78,28 @@ Respond in markdown format with your full analysis.
 
 def generate_comparison_analysis(df1, df2, title, model_source="groq"):
     llm = get_llm(model_source)
-    prompt = f"""
-    You are a data analyst. Perform a deep comparison between the two datasets based on this selected title:
 
-    Comparison Title: {title}
+    sample1 = df1.to_csv(index=False)[:10000]
+    sample2 = df2.to_csv(index=False)[:10000]
 
-    Dataset 1:
-    {df1.to_csv(index=False)[:5000]}
+    prompt = f"""You are a data analyst. Given these two datasets, suggest 3 insightful comparisons a user may want to explore.
 
-    Dataset 2:
-    {df2.to_csv(index=False)[:5000]}
+                Dataset 1:
+                {sample1}
 
-    Respond in markdown format.
-    """
-    return llm(prompt)
+                Dataset 2:
+                {sample2}
+
+                Respond in JSON format:
+                [
+                {{ "{title}": "...", "description": "..." }},
+                ...
+                ]
+            """
+    response = llm(prompt).strip()
+
+    try:
+        return json.loads(response)
+    except json.JSONDecodeError:
+        from utils.json_utils import extract_json_list
+        return extract_json_list(response)

@@ -1,17 +1,18 @@
 import streamlit as st
+import os
+import pandas as pd
+import re
+import json
 from utils.column_selector import get_important_columns
+from utils.visualizer import guess_and_generate_chart
 from utils.visualizer import visualize_from_llm_response
 from utils.insight_suggester import generate_insights, generate_insight_suggestions
 from utils.llm_selector import get_llm
 from utils.chat_handler import handle_user_query_dynamic
 from utils.error_handler import safe_llm_call
-from utils.visualizer import guess_and_generate_chart
-import pandas as pd
-import re
-import json
+from utils.pdf_exporter import generate_pdf_report, export_to_pptx
 import plotly.express as px
 from mongo_db.mongo_handler import save_chat,load_user_chats 
-from mongo_db.mongo_handler import get_user_uploads, get_user_chats
 def inject_auth_css():
     st.markdown("""
         <style>
@@ -139,13 +140,13 @@ def render_single_tabs():
         with col_left:
             st.markdown("### Generated Insights")
             if session["selected_insight_results"]:
-                for insight in session["selected_insight_results"][::-1]:
+                for idx, insight in enumerate(session["selected_insight_results"][::-1]):
                     with st.container(border=True):
                         st.markdown(f"**{insight['question']}**")
                         st.markdown(insight["result"])
                         fig = guess_and_generate_chart(df, insight["result"])
                         if fig:
-                            st.plotly_chart(fig, use_container_width=True)
+                            st.plotly_chart(fig, use_container_width=True, key=f"insight_chart_{idx}")
                         st.markdown("---")
             else:
                 st.info("Please select an insight question from the right to view the results.")
@@ -193,6 +194,10 @@ def render_single_tabs():
                             try:
                                 result = generate_insights(df, question, "groq")
                                 session["selected_insight_results"].append({"question": question, "result": result})
+
+                                # 🔄 Sync with st.session_state so PDF export picks it up
+                                st.session_state["selected_insight_results"] = session["selected_insight_results"]
+
                                 st.session_state["open_category_index_single"] = idx
                                 st.rerun()
                             except Exception as e:
@@ -333,21 +338,55 @@ def render_single_tabs():
 
 
     from utils.pdf_exporter import generate_pdf_report, export_to_pptx
+    from utils.pdf_helpers import format_chat_for_pdf
 
     st.markdown("---")
     st.subheader("Export Report")
 
-    col1, col2 = st.columns(2)
-    with col1:
-     if st.button("Export PDF (Single Dataset)", key="export_single_pdf"):
-        try:
-            session["name"] = st.session_state["current_session"]
-            pdf_path = generate_pdf_report(session)
-            with open(pdf_path, "rb") as f:
-                st.download_button("Download PDF", f, file_name="single_dataset_report.pdf")
-        except Exception as e:
-            st.error(f"Failed to export PDF: {e}")
+    if "report_counter" not in st.session_state:
+        st.session_state["report_counter"] = 0
 
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("Export PDF Report"):
+            formatted_chat = format_chat_for_pdf(st.session_state.get("chat_history", []))
+            
+            # ✅ Ensure insights is always a list
+            insights_dict = st.session_state.get("insights", {})
+            insights = list(insights_dict.values()) if isinstance(insights_dict, dict) else insights_dict
+
+            df = st.session_state.get("df")
+
+            session = {
+                "df": df,
+                "name": st.session_state.get("name", "Unnamed Dataset"),
+                "selected_insight_results": insights,
+                "chat_history": formatted_chat
+            }
+
+            output_path = generate_pdf_report(
+                session=session,
+                filename="final_analysis_report.pdf",
+                model_source="groq"  # ✅ pass the model source explicitly
+            )
+
+            with open(output_path, "rb") as f:
+                pdf_bytes = f.read()
+
+            st.download_button(
+                label="Download PDF",
+                data=pdf_bytes,
+                file_name="final_analysis_report.pdf",
+                mime="application/pdf"
+            )
+            st.success("✅ PDF exported successfully!")
+            st.session_state["report_counter"] += 1
+            st.balloons()
+
+
+
+                        
     # with col2:
     #  if st.button("Export PPTX (Single Dataset)", key="export_single_pptx"):
     #     try:
@@ -396,9 +435,3 @@ def render_single_tabs():
     #                 )
     #     else:
     #         st.info("No chat history found.")
-
-
-
-
-
-

@@ -2,7 +2,7 @@
 import streamlit as st
 
 def render_sidebar():
-    st.sidebar.title("Dynamic Impact Tool")
+    st.sidebar.title("Choose your Analysis")
 
     if st.session_state.get("logged_in", False):
         mode = st.sidebar.radio(
