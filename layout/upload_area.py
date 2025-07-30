@@ -17,18 +17,11 @@ def render_upload_area():
                 file_bytes = uploaded_file.read()
                 file_like = BytesIO(file_bytes)
                 df, _ = load_data(file_like, file_name)
+                st.session_state['df'] = df
                 df = clean_data(df)
 
                 if file_name not in st.session_state["dataset_sessions"]:
-                    st.session_state["dataset_sessions"][file_name] = {
-                        "df": df,
-                        "chat_history": [],
-                        "insight_categories": [],
-                        "selected_insight_results": [],
-                        "visualization_history": [],
-                        "column_selection": []
-                    }
-                    st.session_state["dataset_sessions"][file_name]["name"] = file_name
+                    store_dataset_session(file_name, df)
 
 
                 st.session_state["current_session"] = file_name
@@ -43,14 +36,7 @@ def render_upload_area():
                     df = clean_data(df)
 
                     if file_name not in st.session_state["dataset_sessions"]:
-                        st.session_state["dataset_sessions"][file_name] = {
-                            "df": df,
-                            "chat_history": [],
-                            "insight_categories": [],
-                            "selected_insight_results": [],
-                            "visualization_history": [],
-                            "column_selection": []
-                        }
+                        store_dataset_session(file_name, df)
 
                     st.session_state["current_session"] = file_name
                     st.toast(f"{file_name} uploaded successfully.")
@@ -109,3 +95,16 @@ def render_upload_area():
 
             except Exception as e:
                 st.error(f"Comparison upload failed: {e}")
+
+
+
+def store_dataset_session(file_name, df):
+    st.session_state["dataset_sessions"][file_name] = {
+        "df": df,
+        "chat_history": [],
+        "insight_categories": [],
+        "selected_insight_results": [],
+        "visualization_history": [],
+        "column_selection": [],
+        "name": file_name
+    }

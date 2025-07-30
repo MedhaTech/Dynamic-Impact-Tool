@@ -9,3 +9,7 @@ audit_log.json
 saved_session.json
 logs.json
 users.json
+mongo_db/
+test_fonts.pdf
+*.zip
+generated_plots/
