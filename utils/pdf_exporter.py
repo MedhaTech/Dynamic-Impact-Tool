@@ -835,7 +835,7 @@ def export_to_pptx(session, filename="summary.pptx"):
     insight_list = session.get("insights") or session.get("selected_insight_results", [])
     for insight in insight_list:
         slide = prs.slides.add_slide(prs.slide_layouts[1])
-        slide.shapes.title.text = f"🔍 {insight['question']}"
+        slide.shapes.title.text = f"{insight['question']}"
         slide.shapes.placeholders[1].text = insight['result']
 
     slide = prs.slides.add_slide(prs.slide_layouts[1])

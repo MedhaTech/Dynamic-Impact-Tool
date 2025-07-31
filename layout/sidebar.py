@@ -24,7 +24,7 @@ def render_sidebar():
         st.sidebar.markdown("---")
 
         if st.session_state["mode"] == "single":
-            st.sidebar.markdown("## 🗂️ Dataset History")
+            st.sidebar.markdown("## Dataset History")
             if st.session_state["dataset_sessions"]:
                 for i, dataset in enumerate(st.session_state["dataset_sessions"].keys()):
                     if st.sidebar.button(dataset, key=f"dataset_{i}"):
@@ -34,7 +34,7 @@ def render_sidebar():
                 st.sidebar.info("No datasets uploaded yet.")
 
         elif st.session_state["mode"] == "comparison":
-            st.sidebar.markdown("## 🗂️ Comparison History")
+            st.sidebar.markdown("## Comparison History")
             if st.session_state["compare_sessions"]:
                 for i, comparison in enumerate(st.session_state["compare_sessions"].keys()):
                     if st.sidebar.button(comparison, key=f"compare_{i}"):
@@ -45,7 +45,7 @@ def render_sidebar():
 
         st.sidebar.markdown("---")
 
-        if st.sidebar.button("🧹 Clear All Sessions"):
+        if st.sidebar.button("Clear All Sessions"):
             st.session_state["dataset_sessions"] = {}
             st.session_state["compare_sessions"] = {}
             st.session_state["current_session"] = None

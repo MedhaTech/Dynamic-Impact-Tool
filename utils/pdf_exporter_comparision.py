@@ -317,7 +317,7 @@ def generate_pdf_report_comparison(compare_session, filename="comparison_report.
 
     df = st.session_state.get("df")
     if df is None:
-        st.error("❌ Dataset is missing. Please upload a dataset before exporting the report.")
+        st.error("Dataset is missing. Please upload a dataset before exporting the report.")
         return
     recommendations = generate_section7_recommendations_comparison(df)  # This may return List[str] or List[dict]
 

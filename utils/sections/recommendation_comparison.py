@@ -39,7 +39,7 @@ def generate_section7_recommendations_comparison(insights: dict = None, model_so
     df = st.session_state.get("df")
 
     if df is None:
-        return [f"⚠️ Recommendation generation failed: No dataset found in session."]
+        return [f"Recommendation generation failed: No dataset found in session."]
 
     llm = get_llm(model_source)
 
@@ -97,4 +97,4 @@ You are generating the **Recommendations & Actionable Items** section of a profe
         return parse_recommendations(raw_response)
 
     except Exception as e:
-        return [f"⚠️ Recommendation generation failed: {e}"]
+        return [f"Recommendation generation failed: {e}"]

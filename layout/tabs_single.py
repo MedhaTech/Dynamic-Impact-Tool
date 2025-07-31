@@ -95,7 +95,6 @@ def inject_auth_css():
 
 def render_single_tabs():
     inject_auth_css()
-    # st.write("Session state:", dict(st.session_state))
 
     if st.session_state.get("current_session") is None:
         st.info("Please upload a dataset to continue.")

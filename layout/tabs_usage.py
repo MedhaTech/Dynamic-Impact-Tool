@@ -16,7 +16,7 @@ def load_usage_data():
     return pd.DataFrame(data)
 
 def usage_tab():
-    st.title("📊 User Usage Tracker")
+    st.title("User Usage Tracker")
 
     df = load_usage_data()
 
