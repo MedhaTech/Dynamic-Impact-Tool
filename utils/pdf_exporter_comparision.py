@@ -3,12 +3,14 @@ from fpdf import FPDF
 from fpdf.enums import XPos, YPos
 import os
 import datetime
+import pandas as pd
 from utils.sections.summary import generate_section1_summary
 from utils.sections.introduction import generate_section2_introduction
 from utils.sections.data_overview import generate_section3_data_overview
 from utils.sections.methodology import generate_section4_methodology
 from utils.sections.cross_domain import generate_section6_cross_domain
 from utils.sections.recommendation_comparison import generate_section7_recommendations_comparison
+from utils.sections.conclusion_comparison import generate_section8_conclusion_comparsion
 # from utils.pdf_utils import safe_multicell, draw_markdown_table, clean_insight_text
 import streamlit as st
 import re
@@ -315,11 +317,8 @@ def generate_pdf_report_comparison(compare_session, filename="comparison_report.
     pdf.set_font("DejaVu", "B", 16)
     pdf.cell(0, 10, "7. Recommendations & Actionable Items", ln=True)
 
-    df = st.session_state.get("df")
-    if df is None:
-        st.error("Dataset is missing. Please upload a dataset before exporting the report.")
-        return
-    recommendations = generate_section7_recommendations_comparison(df)  # This may return List[str] or List[dict]
+    df_combined = pd.concat([compare_session["df1"], compare_session["df2"]], ignore_index=True)
+    recommendations = generate_section7_recommendations_comparison(df_combined)
 
     if recommendations:
         for idx, rec in enumerate(recommendations, start=1):
@@ -341,6 +340,17 @@ def generate_pdf_report_comparison(compare_session, filename="comparison_report.
     else:
         safe_multicell(pdf, "No recommendations available for this dataset.")
 
+    # === SECTION 8: Conclusion ===
+    try:
+        conclusion_text = generate_section8_conclusion_comparsion(df_combined, insights, model_source)
+        pdf.add_page()
+        section_pages.append(("Conclusion", pdf.page_no()))
+        pdf.set_font("DejaVu", "B", 16)
+        pdf.cell(0, 10, "8. Conclusion", ln=True)
+        pdf.set_font("DejaVu", "", 12)
+        safe_multicell(pdf, conclusion_text)
+    except Exception as e:
+        safe_multicell(pdf, f"Failed to generate conclusion: {e}")
 
     # === Export PDF ===
     os.makedirs("exports", exist_ok=True)

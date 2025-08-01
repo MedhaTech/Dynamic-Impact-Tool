@@ -34,12 +34,9 @@ def parse_recommendations(raw_text: str):
     # Fallback: if no matches, return raw text
     return recommendations if recommendations else [raw_text]
 
-def generate_section7_recommendations_comparison(insights: dict = None, model_source="groq") -> list:
-    # Retrieve the dataframe from session state
-    df = st.session_state.get("df")
-
+def generate_section7_recommendations_comparison(df: pd.DataFrame, insights: dict = None, model_source="groq") -> list:
     if df is None:
-        return [f"Recommendation generation failed: No dataset found in session."]
+        return [f"Recommendation generation failed: No dataset provided."]
 
     llm = get_llm(model_source)
 

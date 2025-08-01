@@ -62,8 +62,11 @@
 #     return user_files
 
 
-
-
+# mongo_db/mongo_ops.py
+import os
+from dotenv import load_dotenv
+load_dotenv()
+mongo_uri = os.getenv("MONGO_URI")
 
 from mongo_db.mongo import (
     get_chat_collection,
@@ -99,7 +102,8 @@ def load_user_files(username):
 
 # === Get Chat Sessions (Grouped if needed) ===
 def get_user_chats(username):
-    db = get_mongo_client()["streamlit_chat_db"]
+    db = get_mongo_client()["dynamic_impact_tool"]
+
     chats_collection = db["chats"]
 
     results = chats_collection.find({"username": username}).sort("timestamp", -1)
@@ -116,7 +120,7 @@ def get_user_chats(username):
 
 # === Get Uploaded Files ===
 def get_user_files(username):
-    db = get_mongo_client()["streamlit_chat_db"]
+    db = get_mongo_client()["dynamic_impact_tool"]
     files_collection = db["files"]
 
     user_files = list(files_collection.find({"username": username}).sort("timestamp", -1))
@@ -126,3 +130,25 @@ def get_user_files(username):
             file["content"] = file["content"]  # You can decode it if needed
 
     return user_files
+
+from mongo_db.mongo import get_chat_history_collection
+# === Save to Chat History ===
+def save_chat_to_history(username, user_message, ai_response):
+    get_chat_history_collection().insert_many([
+        {
+            "username": username,
+            "role": "user",
+            "content": user_message,
+            "timestamp": datetime.utcnow()
+        },
+        {
+            "username": username,
+            "role": "ai",
+            "content": ai_response,
+            "timestamp": datetime.utcnow()
+        }
+    ])
+
+# === Load Chat History ===
+def load_chat_history(username):
+    return list(get_chat_history_collection().find({"username": username}).sort("timestamp", 1))

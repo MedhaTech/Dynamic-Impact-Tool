@@ -1,9 +1,9 @@
-from pymongo import MongoClient
-import os
-from dotenv import load_dotenv
-import os
+# from pymongo import MongoClient
+# import os
+# from dotenv import load_dotenv
+# import os
 
-load_dotenv()  # This loads variables from .env into os.environ
+# load_dotenv()  # This loads variables from .env into os.environ
 
 # def test_mongo_connection():
 #     try:
@@ -19,7 +19,7 @@ load_dotenv()  # This loads variables from .env into os.environ
 #     test_mongo_connection()
 
 
-# test_mongo_connection.py
+# # test_mongo_connection.py
 
 # from mongo_db.mongo import get_mongo_client
 
@@ -55,7 +55,7 @@ load_dotenv()  # This loads variables from .env into os.environ
 #     print("❌ User not found in MongoDB.")
 
 
-# check_all_users.py
+# # check_all_users.py
 # from mongo_db.mongo import get_user_collection
 
 # users = get_user_collection().find()
@@ -107,12 +107,24 @@ load_dotenv()  # This loads variables from .env into os.environ
 # client = MongoClient(mongo_uri)
 # print("✅ Connected to MongoDB at:", client.address)
 
+# from pymongo import MongoClient
+# from dotenv import load_dotenv
+# import os
+
+# load_dotenv()
+# mongo_uri = os.getenv("MONGO_URI")
+# client = MongoClient(mongo_uri)
+
+# db = client["dynamic_impact_tool"]
+
 from pymongo import MongoClient
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
-mongo_uri = os.getenv("MONGO_URI")
-client = MongoClient(mongo_uri)
+uri = "mongodb+srv://Admin:Admin@cluster0.wtjtgf3.mongodb.net/dynamic_impact_tool?retryWrites=true&w=majority&appName=Cluster0"
 
-db = client["dynamic_impact_tool"]
+try:
+    client = MongoClient(uri, tls=True, serverSelectionTimeoutMS=10000)
+    client.admin.command('ping')
+    print("✅ MongoDB connection successful!")
+except Exception as e:
+    print("❌ MongoDB connection failed:", e)
+

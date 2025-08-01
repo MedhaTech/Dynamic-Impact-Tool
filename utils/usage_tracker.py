@@ -4,14 +4,12 @@ import os
 import json
 import datetime
 
-# Where to store logs
 USAGE_LOG_PATH = "logs/usage_log.json"
 
 def log_usage(user_id: str, model: str, tokens_input: int, tokens_output: int, cost: float):
     """Log a single API usage entry for a user."""
     timestamp = datetime.datetime.now().isoformat()
 
-    # Create the log entry
     entry = {
         "user_id": user_id,
         "model": model,
@@ -22,14 +20,12 @@ def log_usage(user_id: str, model: str, tokens_input: int, tokens_output: int, c
         "cost": round(cost, 4)
     }
 
-    # Load existing logs or create new
     if os.path.exists(USAGE_LOG_PATH):
         with open(USAGE_LOG_PATH, "r") as f:
             data = json.load(f)
     else:
         data = []
 
-    # Append and save
     data.append(entry)
     os.makedirs(os.path.dirname(USAGE_LOG_PATH), exist_ok=True)
     with open(USAGE_LOG_PATH, "w") as f:

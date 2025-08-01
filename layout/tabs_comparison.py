@@ -490,23 +490,29 @@ def render_comparison_tabs():
     col1, col2 = st.columns(2)
 
     with col1:
-     st.markdown("###  Export Report")
-     if st.button(" Export Comparison Report", key="export_pdf_compare"):
-        try:
-            compare_session["name"] = st.session_state["current_session"]
-            st.session_state["comparison_insight_results"] = compare_session.get("insights", [])
-            if " vs " in compare_key:
-                dataset1_name, dataset2_name = compare_key.split(" vs ")
-            else:
-                dataset1_name, dataset2_name = "Dataset 1", "Dataset 2"
-            compare_session["dataset1_name"] = dataset1_name
-            compare_session["dataset2_name"] = dataset2_name
-            compare_session["comparison_insight_results"] = compare_session.get("insights", [])
-            compare_session["comparison_recommendations"] = compare_session.get("recommendations", [])
+        st.markdown("### Export Report")
+        if st.button("Export Comparison Report", key="export_pdf_compare"):
+            try:
+                compare_session["name"] = st.session_state["current_compare"] 
+                st.session_state["comparison_insight_results"] = compare_session.get("insights", [])
 
-            pdf_path = generate_pdf_report_comparison(compare_session, filename="comparison_summary.pdf")
-            with open(pdf_path, "rb") as f:
-                st.download_button("Download PDF", f, file_name="comparison_summary.pdf")
-        except Exception as e:
-            st.error(f"Failed to export PDF: {e}")
-    
+                if " vs " in compare_key:
+                    dataset1_name, dataset2_name = compare_key.split(" vs ")
+                else:
+                    dataset1_name, dataset2_name = "Dataset 1", "Dataset 2"
+
+                compare_session["dataset1_name"] = dataset1_name
+                compare_session["dataset2_name"] = dataset2_name
+                compare_session["comparison_insight_results"] = compare_session.get("insights", [])
+                compare_session["comparison_recommendations"] = compare_session.get("recommendations", [])
+
+                pdf_path = generate_pdf_report_comparison(compare_session, filename="comparison_summary.pdf")
+
+                if pdf_path and os.path.exists(pdf_path):
+                    with open(pdf_path, "rb") as f:
+                        st.download_button("Download PDF", f, file_name="comparison_summary.pdf")
+                        st.balloons()
+                else:
+                    st.error("PDF generation failed. Please ensure datasets and insights are available.")
+            except Exception as e:
+                st.error(f"Failed to export PDF: {e}")

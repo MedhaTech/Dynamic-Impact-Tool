@@ -179,4 +179,5 @@ with st.sidebar:
         st.session_state.clear()
         st.success("You have been logged out.")
         st.rerun()
+        st.balloons()
 

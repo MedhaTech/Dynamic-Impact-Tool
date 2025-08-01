@@ -36,4 +36,4 @@ Write 1–2 well-structured paragraphs in a formal tone that summarize the entir
         return llm(prompt)
 
     except Exception as e:
-        return f"⚠️ Conclusion generation failed: {e}"
+        return f"Conclusion generation failed: {e}"

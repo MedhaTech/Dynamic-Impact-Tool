@@ -23,3 +23,6 @@ tabulate
 fonttools
 python-pptx
 kaleido
+seaborn
+langchain_community
+certifi

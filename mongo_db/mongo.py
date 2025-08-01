@@ -2,6 +2,10 @@
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
+from mongo_db.db import get_db
+load_dotenv()
+mongo_uri = os.getenv("MONGO_URI")
+
 
 load_dotenv()
 
@@ -25,4 +29,8 @@ def get_upload_collection():
 
 def get_mongo_client():
     return MongoClient(MONGO_URI)
+
+def get_chat_history_collection():
+    return db["chat_history"]
+
 
