@@ -12,3 +12,4 @@ users.json
 test_fonts.pdf
 *.zip
 generated_plots/
+venv311
