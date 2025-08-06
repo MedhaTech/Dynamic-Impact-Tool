@@ -78,6 +78,7 @@ def inject_auth_css():
     """, unsafe_allow_html=True)
 
 def render_guided_tour():
+    st.balloons()
     inject_auth_css()
     st.title("Welcome to the Dynamic Impact Tool Tour")
 

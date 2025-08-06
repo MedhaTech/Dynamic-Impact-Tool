@@ -1,9 +1,9 @@
 import pandas as pd
-import streamlit as st  # Required to access session state
+import streamlit as st  
 
 def generate_section5_analysis_insights(df: pd.DataFrame, model_source="groq") -> str:
     insights = st.session_state.get("selected_insight_results", [])
-    st.write("DEBUG: selected_insight_results = ", st.session_state.get("selected_insight_results", []))
+    # st.write("DEBUG: selected_insight_results = ", st.session_state.get("selected_insight_results", []))
 
     if not insights:
         return "No insights available for this dataset."

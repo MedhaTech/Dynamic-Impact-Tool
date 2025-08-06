@@ -1,9 +1,11 @@
+# auth.py
 import streamlit as st
 import bcrypt
 import secrets
 from datetime import datetime, timedelta
 from db import get_connection
 from mongo_db.mongo import get_user_collection
+
 def login():
     st.subheader("Login")
     username = st.text_input("Username", key="login_user")
