@@ -34,6 +34,8 @@ The **Dynamic Impact Tool** is an AI-powered Streamlit application designed to h
 
 ## Installation
 
+### Option 1: Local Setup
+
 ### 1. Clone the Repository
 
 ```bash
@@ -57,6 +59,36 @@ pip install -r requirements.txt
 ### 4. Set Environment Variables
 
 GROQ_API_KEY=your_groq_key
+
+### Option 2: Docker Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/dynamic-impact-tool.git
+cd dynamic-impact-tool
+```
+
+### 2. Build and Run with Docker Compose
+
+```bash
+docker compose up --build
+```
+
+This will:
+- Build the application container
+- Start the required services (MongoDB, MySQL)
+- Run the application on http://localhost:8501
+
+### Environment Variables
+
+The following environment variables are configured in docker-compose.yml:
+- MONGO_URI: MongoDB connection string
+- DB_HOST: MySQL host
+- DB_USER: Database username
+- DB_PASSWORD: Database password
+- DB_NAME: Database name
+- GROQ_API_KEY: Your Groq API key
 
 # Running the App
 
