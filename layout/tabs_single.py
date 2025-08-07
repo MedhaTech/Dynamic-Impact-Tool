@@ -225,7 +225,7 @@ def render_single_tabs():
                 st.error(f"Visualization failed: {e}")
 
     st.markdown("---")
-    with st.expander("Chat With Your Dataset", expanded=True):
+    with st.expander("Talk with your Dataset.", expanded=True):
         st.markdown(
             """
             <style>

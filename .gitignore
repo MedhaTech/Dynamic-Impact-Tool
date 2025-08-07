@@ -1,8 +1,6 @@
 __pycache__/
 *.pyc
-
 .env
-
 exports/
 venv/
 audit_log.json
@@ -13,3 +11,4 @@ test_fonts.pdf
 *.zip
 generated_plots/
 venv311
+.vscode/

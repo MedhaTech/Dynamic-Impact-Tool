@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      - MONGO_URI=mongodb+srv://Admin:Admin@cluster0.wtjtgf3.mongodb.net/dynamic_impact_tool?retryWrites=true&w=majority&appName=Cluster0
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=dynamic_impact_tool
+      - GROQ_API_KEY=
+    depends_on:
+      - mongodb
+      - mysql
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=dynamic_impact_tool
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mongodb_data:
+  mysql_data:
