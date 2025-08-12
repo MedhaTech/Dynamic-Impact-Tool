@@ -11,7 +11,7 @@ services:
       - DB_USER=root
       - DB_PASSWORD=rootpassword
       - DB_NAME=dynamic_impact_tool
-      - GROQ_API_KEY=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
+      - GROQ_API_KEY=${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}
     depends_on:
       - mongodb
       - mysql
