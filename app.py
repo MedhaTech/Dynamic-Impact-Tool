@@ -84,9 +84,17 @@ from layout.tabs_single import render_single_tabs
 from layout.tabs_comparison import render_comparison_tabs
 from dotenv import load_dotenv
 from auth import login, signup, view_users, view_logs
+from init_db import init_database
 from tour import render_guided_tour
 
 load_dotenv()
+
+# Initialize database before starting app
+try:
+    init_database()
+except Exception as e:
+    st.error(f"Failed to initialize database: {e}")
+    st.stop()
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
