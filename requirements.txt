@@ -2,7 +2,7 @@ streamlit
 pandas
 openpyxl
 python-dotenv
-plotly
+plotly>=5.18.0
 reportlab
 python-pptx
 requests
@@ -18,7 +18,7 @@ bcrypt
 mysql-connector-python
 pymongo
 matplotlib
-kaleido
+kaleido==0.2.1
 tabulate
 fonttools
 python-pptx
@@ -26,3 +26,4 @@ kaleido
 seaborn
 langchain_community
 certifi
+# Remove plotly-orca as it's deprecated
